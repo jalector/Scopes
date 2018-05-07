@@ -1,0 +1,64 @@
+
+						Plantamiento de proyecto
+
+Proposito
+	Escribir un generador de tablas de símbolos
+
+Datos que se agregan a las tablas
+	Son todos aquellos valores que van a regresar un resultados.
+
+Entrada,
+	Un programa.
+
+Salida,
+	Debe generar una tabla de símbolos, correspodiente al programa.
+
+Class
+	var
+	var
+	Métodos
+		var
+		var
+		for
+			var
+			var
+
+
+[Class prueba](Branch)
+	- [int x] (Sheet)
+	- [void f(int m)](Branch)
+		- [float x](Sheet)
+		- [float y](Sheet)
+	- [int f(int n)](Branch)
+		- [bool t](Sheet)
+
+
+
+
+int x 							
+void f(int m){
+	float x, y;
+	...
+	{int i, j; ...; }
+	{int i, j; ...; }
+}
+
+int g(int n){
+	bool t;
+	...
+}
+
+Global Symbol Tab
+---------------------------------------------------
+x		 			var  				int
+f 		 			fun					int->void 
+g 					fun 				int->int
+
+Function F Symbol Tab
+---------------------------------------------------
+m					param				int
+x					var 				float
+y					var 				float
+
+Function F Symol Tab
+
