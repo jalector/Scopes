@@ -1,0 +1,29 @@
+class Prueba{
+    int a1, a2, a3, contadorA, contadorB;
+    int resultado;
+    a1= 5 + 5;
+    a2= 20 - 20;
+
+    int calcularRes () {
+        int a1;
+        int fa = 3;
+        a3= 2;
+        boolean boli= true;
+    }
+
+    boolean esValido (int lol, int xd){
+        boolean xd;
+        x= a1 < a2;
+    }
+
+    void test(int index){
+        int algo;
+    }
+
+    var = contador;
+
+    long calcularDerivada(int xd){
+        kk = 10;
+        short numeroMini = 10;
+    } 
+}

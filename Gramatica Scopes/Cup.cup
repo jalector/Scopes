@@ -1,0 +1,119 @@
+import java.io.*;
+import java_cup.runtime.*;
+
+parser code {:
+	Yylex lexico;
+
+	public Parser(Yylex lexico){
+		this.lexico = lexico;
+	}
+
+	public static void main(String[] args) throws Exception{
+		new Parser(new Yylex(new InputStreamReader(System.in))).parse();
+	}
+
+	public void syntax_error(Symbol s){
+		report_error("Error de sintaxis: "+Integer.toString(Yylex.linea + 1) + ", Columna: "+ Integer.toString(Yylex.pos + 1) + ". En \"" + s.value + "\"\n", null);
+	}
+:}
+
+scan with {:
+	return lexico.next_token();
+:}
+
+action code{:
+	int integer = 1;
+	Pool pool = new Pool();
+:}
+
+terminal CLASS;
+terminal LCBRACKET, RCBRACKET;
+terminal PLUS, MINUS, TIMES, DIVIDE, MOD, LPAREN, RPAREN, SEMI;
+terminal LESS, LESSEQ, GREATER, GREATEREQ, EQUALS, DIFF, AND, OR, NOT;
+terminal ASSIGN;
+terminal COMMA;
+terminal ID, VOID, BYTE, SHORT, INT, LONG, BOOLEAN, String,FLOAT, DOUBLE;
+terminal Integer NUMBER;
+terminal Boolean TRUE, FALSE;
+
+non terminal program, stm_list, stm;
+non terminal dec_list, dec, param, func, tipo;
+non terminal id_list, param_list;
+non terminal expr, expr_ari, expr_b, expr_str;
+non terminal bool_cons;
+
+precedence left OR;
+precedence left AND;
+precedence left EQUALS, DIFF;
+precedence left LESS, LESSEQ, GREATER, GREATEREQ;
+precedence left PLUS, MINUS;
+precedence left TIMES, DIVIDE, MOD;
+precedence left NOT;
+
+
+program 		::= CLASS ID LCBRACKET stm_list RCBRACKET;
+
+stm_list		::= stm stm_list
+				| stm;
+
+stm				::= dec
+				| func;
+
+dec_list		::= dec dec_list
+				| dec; 				
+
+dec				::= tipo ID id_list SEMI
+				| tipo ID ASSIGN expr SEMI
+				| ID ASSIGN expr SEMI;
+
+id_list			::= id_list COMMA ID
+				| ;		
+
+func			::= tipo ID LPAREN RPAREN LCBRACKET dec_list RCBRACKET
+				| tipo ID LPAREN param param_list RPAREN LCBRACKET dec_list RCBRACKET;				
+
+param			::= tipo ID; 
+
+param_list		::= param_list COMMA param
+				| ;
+
+expr_ari		::= expr_ari PLUS expr_ari
+				| expr_ari MINUS expr_ari
+				| expr_ari TIMES expr_ari					
+				| expr_ari DIVIDE expr_ari					
+				| expr_ari MOD expr_ari					
+				| LPAREN expr_ari RPAREN					
+				| NUMBER 
+				| REAL					
+				| ID;
+
+expr_b 			::= expr_ari LESS expr_ari
+				| expr_ari LESSEQ expr_ari
+				| expr_ari GREATER expr_ari
+				| expr_ari GREATEREQ expr_ari
+				| expr_ari DIFF expr_ari
+				| expr_ari EQUALS expr_ari
+				| NOT expr
+				| expr OR expr
+				| expr AND expr
+				| LPAREN expr_b RPAREN
+				| bool_cons;
+
+expr_str		| STRING_VALUE
+				| expr_str PLUS expr_str;
+
+expr         	::= expr_ari
+				| expr_b;
+
+tipo			::= VOID
+				| BYTE
+				| SHORT
+				| INT
+				| LONG
+				| BOOLEAN
+				| String
+				| FLOAT
+				| DOUBLE;		
+
+bool_cons		::= FALSE
+				| TRUE;

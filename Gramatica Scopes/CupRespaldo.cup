@@ -1,0 +1,127 @@
+import java.io.*;
+import java_cup.runtime.*;
+
+parser code {:
+	Yylex lexico;
+
+	public Parser(Yylex lexico){
+		this.lexico = lexico;
+	}
+
+	public static void main(String[] args) throws Exception{
+		new Parser(new Yylex(new InputStreamReader(System.in))).parse();
+	}
+
+	public void syntax_error(Symbol s){
+		report_error("Error de sintaxis: "+Integer.toString(Yylex.linea + 1) + ", Columna: "+ Integer.toString(Yylex.pos + 1) + ". En \"" + s.value + "\"", null);
+	}
+:}
+
+scan with {:
+	return lexico.next_token();
+:}
+
+action code{:
+	int integer = 1;
+	Pool pool = new Pool();
+:}
+
+terminal String PLUS, MINUS, TIMES, DIVIDE, MOD, LPAREN, RPAREN, SEMI;
+terminal String LESS, LESSEQ, GREATER, GREATEREQ, EQUALS, DIFF;
+terminal String AND, OR, NOT;
+terminal SICIERTO, NOCIERTO, unnumero, unboolean;
+terminal String ASSIGN, ID;
+terminal Integer NUMBER;
+terminal PUNTO;
+
+non terminal expr_list, expr_part;
+non terminal expr;
+non terminal expr_ari, expr_log, expr_rel;
+non terminal log_value, value;
+
+precedence left OR;
+precedence left AND;
+precedence left EQUALS, DIFF;
+precedence left LESS, LESSEQ, GREATER, GREATEREQ;
+precedence left PLUS, MINUS;
+precedence left TIMES, DIVIDE, MOD;
+precedence left NOT;
+
+expr_list 		::= expr_list expr_part
+				| expr_part;
+
+expr_part 		::= expr SEMI{:
+					System.out.println("Operación exitosa. Resultado: "+e.toString());
+				:}
+				| unnumero:t ID:i ASSIGN expr:e{:
+					pool.addTupla(t, i, e.intValue());
+					System.out.println(e.intValue());
+				:}
+				| unboolean:t ID:i ASSIGN expr:e{:
+					pool.addTupla(t, i, e.booleanValue());
+					System.out.println(e.booleanValue());
+				:}
+				| PUNTO {:
+                	System.out.println("Archivo procesando exitosamente.");
+               	 	System.exit(1);
+            	:};
+
+expr 			::= expr_ari
+				| expr_log
+				| expr_rel;
+
+expr_ari		::= expr_ari PLUS expr_ari
+				| expr_ari MINUS expr_ari
+				| expr_ari TIMES expr_ari
+				| expr_ari DIVIDE expr_ari
+				| expr_ari MOD expr_ari
+				| LPAREN expr_ari RPAREN
+				| value;
+
+expr_rel		::= expr_ari LESS expr_ari
+				| expr_ari LESSEQ expr_ari
+				| expr_ari GREATER expr_ari
+				| expr_ari GREATEREQ expr_ari
+				| expr_ari DIFF expr_ari
+				| expr_ari EQUALS expr_ari
+				| expr_log EQUALS expr_log
+				| expr_log DIFF expr_log
+				| LPAREN expr_rel RPAREN;
+
+expr_log		::= log_value 
+				| expr_rel
+				| expr_log OR expr_log
+				| expr_log AND expr_log
+				| NOT expr_log
+				| LPAREN expr_log RPAREN
+				| expr_log;
+
+value			::= NUMBER:n {:
+					RESULT = n;
+				:}
+				| ID:i {:
+					Tupla aux = pool.findTupla(i);
+            		if(aux == null){
+            	    	System.out.println("Variable no definida ["+i+"]");
+            	    	System.exit(0);
+            		}else{
+                		RESULT = (int)aux.getValue();
+            		}
+				:};
+
+log_value		::= NOCIERTO:b {:
+					RESULT= b;
+				:}
+				| SICIERTO:b {:
+					RESULT= b;
+				:}
+				| ID:i {:
+					Tupla aux = pool.findTupla(i);
+            		if(aux == null){
+            	    	System.out.println("Variable no definida ["+i+"]");
+            	    	System.exit(0);
+            		}else{
+                		RESULT = (double)aux.getValue();
+            		}
+				:};				
+
