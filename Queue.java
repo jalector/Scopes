@@ -16,13 +16,13 @@ public class Queue <Type> {
         q.enqueue(5);
         q.enqueue(6);
        
-        q.printQueue();
+        q.printYou();
         q.dequeue();
         q.dequeue();
         q.dequeue();
         q.dequeue();
         q.dequeue();
-        q.printQueue();
+        q.printYou();
     }
 */
     public void enqueue(Type element){
@@ -62,11 +62,11 @@ public class Queue <Type> {
         this.node = null;
         this.size = 0;
     }
-    public int getSize(){
+    public int size(){
         return this.size;
     }
 
-    public void printQueue(){
+    public void printYou(){
         Node <Type> aux = this.node;
         while(aux != null){
             aux.printInfo();
