@@ -9,11 +9,17 @@ class Prueba{
         int fa = 3;
         a3= 2;
         boolean boli= true;
+        float flotante1 = 10.1;
+        String cadena1= "Cualquier Cadena co~`^"#$%&/()=" ;
+        return a1;
+        
     }
 
     boolean esValido (int lol, int xd){
-        boolean xd;
-        x= a1 < a2;
+        boolean booli;
+        booli= lol < xd;
+
+        return true;
     }
 
     void test(int index){
@@ -22,8 +28,10 @@ class Prueba{
 
     var = contador;
 
-    long calcularDerivada(int xd){
+    double calcularDerivada(int xd){
         kk = 10;
         short numeroMini = 10;
+
+        return (192.168 + 10.1 + 0.255);
     } 
 }

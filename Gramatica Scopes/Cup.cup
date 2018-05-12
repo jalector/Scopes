@@ -32,13 +32,16 @@ terminal PLUS, MINUS, TIMES, DIVIDE, MOD, LPAREN, RPAREN, SEMI;
 terminal LESS, LESSEQ, GREATER, GREATEREQ, EQUALS, DIFF, AND, OR, NOT;
 terminal ASSIGN;
 terminal COMMA;
-terminal ID, VOID, BYTE, SHORT, INT, LONG, BOOLEAN, String,FLOAT, DOUBLE;
+terminal ID, VOID, BYTE, SHORT, INT, LONG, BOOLEAN, STRING, FLOAT, DOUBLE;
+terminal RETURN;
+terminal REAL;
 terminal Integer NUMBER;
 terminal Boolean TRUE, FALSE;
+terminal String STRING_VALUE;
 
 non terminal program, stm_list, stm;
 non terminal dec_list, dec, param, func, tipo;
-non terminal id_list, param_list;
+non terminal id_list, param_list, ret_value;
 non terminal expr, expr_ari, expr_b, expr_str;
 non terminal bool_cons;
 
@@ -69,12 +72,15 @@ dec				::= tipo ID id_list SEMI
 id_list			::= id_list COMMA ID
 				| ;		
 
-func			::= tipo ID LPAREN RPAREN LCBRACKET dec_list RCBRACKET
-				| tipo ID LPAREN param param_list RPAREN LCBRACKET dec_list RCBRACKET;				
+func			::= tipo ID LPAREN RPAREN LCBRACKET dec_list ret_value RCBRACKET
+				| tipo ID LPAREN param param_list RPAREN LCBRACKET dec_list ret_value RCBRACKET;				
 
 param			::= tipo ID; 
 
 param_list		::= param_list COMMA param
+				| ;
+
+ret_value		::= RETURN expr SEMI
 				| ;
 
 expr_ari		::= expr_ari PLUS expr_ari
@@ -99,11 +105,12 @@ expr_b 			::= expr_ari LESS expr_ari
 				| LPAREN expr_b RPAREN
 				| bool_cons;
 
-expr_str		| STRING_VALUE
-				| expr_str PLUS expr_str;
+expr_str		::= STRING_VALUE
+				| expr PLUS expr;
 
 expr         	::= expr_ari
-				| expr_b;
+				| expr_b
+				| expr_str;
 
 tipo			::= VOID
 				| BYTE
@@ -111,7 +118,7 @@ tipo			::= VOID
 				| INT
 				| LONG
 				| BOOLEAN
-				| String
+				| STRING
 				| FLOAT
 				| DOUBLE;		
 

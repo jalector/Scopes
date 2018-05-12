@@ -27,6 +27,7 @@ import java_cup.runtime.Symbol;
 "double"				{return new Symbol(sym.DOUBLE, new String(yytext()));}
 "true"					{return new Symbol(sym.TRUE, new String(yytext()));}
 "false"					{return new Symbol(sym.FALSE, new String(yytext()));}
+"return"				{return new Symbol(sym.RETURN, new String(yytext()));}
 "{"						{return new Symbol(sym.LCBRACKET, new String(yytext()));}
 "}"						{return new Symbol(sym.RCBRACKET, new String(yytext()));}
 ","						{return new Symbol(sym.COMMA, new String(yytext()));}
@@ -50,8 +51,8 @@ import java_cup.runtime.Symbol;
 ")"						{return new Symbol(sym.RPAREN, new String(yytext()));}
 "="						{return new Symbol(sym.ASSIGN, new String(yytext()));}
 [a-zA-Z]+[a-zA-Z0-9_]*	{return new Symbol(sym.ID, new String(yytext())); }
-"[.*]"					{return new Symbol(sym.STRING_VALUE, new String(yytext())); }
-0 | ([1-9][0-9]*).0|([0-9]*[1-9]+)					{return new Symbol(sym.REAL, new String(yytext())); }
-0 | ([1-9][0-9]*)		{return new Symbol(sym.NUMBER, new Integer(yytext()));}
+(0|([1-9][0-9]*))(.)(0|([0-9]*[1-9]+))					{return new Symbol(sym.REAL, new String(yytext())); }
+0|([1-9][0-9]*)		{return new Symbol(sym.NUMBER, new Integer(yytext()));}
+\"[ -¡]*\"					{return new Symbol(sym.STRING_VALUE, new String(yytext())); }
 [\t\r\n\l ]				{}
 .						{System.out.println("Caracter no válido "+ yytext()); }
