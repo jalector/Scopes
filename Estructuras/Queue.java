@@ -55,21 +55,48 @@ public class Queue <Type> {
     public Type front(){
         return this.node.getInformation();
     }
+
+    public Node <Type> getNode(Type information){
+        Node <Type> aux = this.node;
+        Node <Type> answer = null;
+        while(aux != null){            
+            if(aux.getInformation() == information){
+                answer = aux;
+                break;
+            }
+            if(aux.hasChildren() && answer == null){
+                answer = aux.getChildren().getNode(information);
+            }            
+            aux = aux.getPreviousNode();
+        }
+        return answer;
+    }
+
     public boolean isEmpty(){
         return this.node == null;
     }
+
     public void clear(){
         this.node = null;
         this.size = 0;
     }
+
     public int size(){
         return this.size;
     }
 
-    public void printYou(){
+    public void printQueue(){
         Node <Type> aux = this.node;
         while(aux != null){
-            aux.printInfo();
+            aux.printNode();
+            aux = aux.getPreviousNode();
+        }
+    }
+
+    public void printQueue(String str){
+        Node <Type> aux = this.node;
+        while(aux != null){
+            aux.printNode(str);
             aux = aux.getPreviousNode();
         }
     }
