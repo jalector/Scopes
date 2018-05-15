@@ -35,7 +35,7 @@ public class Queue <Type> {
     }
     
     public Node <Type> front(){
-        return this.node();
+        return this.node;
     }
 
     

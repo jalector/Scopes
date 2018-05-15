@@ -1,20 +1,22 @@
 public class Node <Type> {
     private Node <Type> next, previous;
     private Type information;
+    private List <Type> children;
 
     public Node(Type information){
         this.next = null;
         this.previous = null;
         this.information = information;
-        this.children = new Queue <Type> ();
+        this.children = new List <Type> ();
     }
 
     public Node(){
         this.next = null;
         this.previous = null;
         this.information = null;
-        this.children = new Queue <Type> ();
+        this.information = information;
     }
+    
     /* Method's node */
     public void setNextNode(Node <Type> node){
         this.next = node;
@@ -42,74 +44,20 @@ public class Node <Type> {
         return String.valueOf(this.information);
     }
 
-    /* To Print */    
-    public void printNode(String str){
-        System.out.println(str+"├─"+this.information);
-        if(!this.children.isEmpty()){
-            this.children.printQueue(str+"│"+"  ");
-        }
-    }
-    public void printRoot(){
-        System.out.println(this.information);
-        if(!this.children.isEmpty()){
-            this.children.printQueue(" ");
-        }
-    }
-    public void printNode(){
-        System.out.println(this.information);
-        if(!this.children.isEmpty()){
-            this.children.printQueue();
-        }
+    public List <Type> getChildren(){
+        return this.children:
     }
 
-    /* Method's children */
-
-    public Queue <Type> getChildren(){
-        return this.children;
-    }
-
-    public void setChildren(Queue <Type> children){
+    public void setChildren(List <Type> children){
         this.children = children;
     }
 
-    public void addChild(Type child){
-        this.children.enqueue(child);
-    }
-    
-    public void removeChild(Type child){
-        /* Todavía no está */
-    }
-
     public boolean hasChildren(){
-        return !this.children.isEmpty();
+        return !this.children.size() == 0;
     }
 
-    public Node <Type> getNode(Node <Type> n){
-        Node <Type> aux = this;
-        Node <Type> answer = null;
-        while(aux != null){            
-            if(aux.getInformation() == n){
-                answer = aux;break;
-            }
-            if(aux.hasChildren()){
-                answer = aux.getChildren().front().getNode(n);
-            }            
-            aux = aux.getPreviousNode();
-        }
-        return answer;
-    }
-
-    public void setChildTo(Node <Type> node, Type information){
-        Node <Type> aux = this.children.getNode(node);
-        if(aux != null){
-            aux.addChild(information);
-        }
-    }
-
-    public int howManyChildren(){
-        return this.children.size();
-    }
-
+  
+/*
     public static void main(String [] args){
         Node <String> root = new Node <String> ("Caos");       
         root.addChild("Nix");
@@ -141,5 +89,32 @@ public class Node <Type> {
 
         root.printRoot();
     }
+    
+      To Print   
+    public void printNode(String str){
+        System.out.println(str+"├─"+this.information);
+        if(!this.children.isEmpty()){
+            this.children.printQueue(str+"│"+"  ");
+        }
+    }
+    public void printRoot(){
+        System.out.println(this.information);
+        if(!this.children.isEmpty()){
+            this.children.printQueue(" ");
+        }
+    }
+    public void printNode(){
+        System.out.println(this.information);
+        if(!this.children.isEmpty()){
+            this.children.printQueue();
+        }
+    }
 
+    public void setChildTo(Node <Type> node, Type information){
+        Node <Type> aux = this.children.getNode(node);
+        if(aux != null){
+            aux.addChild(information);
+        }
+    }
+*/
 }
