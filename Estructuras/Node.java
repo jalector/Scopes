@@ -1,6 +1,5 @@
 public class Node <Type> {
     private Node <Type> next, previous;
-    private Queue <Type> children;
     private Type information;
 
     public Node(Type information){
@@ -70,7 +69,7 @@ public class Node <Type> {
     }
 
     public void setChildren(Queue <Type> children){
-        this.children = children;java
+        this.children = children;
     }
 
     public void addChild(Type child){
@@ -85,7 +84,22 @@ public class Node <Type> {
         return !this.children.isEmpty();
     }
 
-    public void setChildTo(Type node, Type information){
+    public Node <Type> getNode(Node <Type> n){
+        Node <Type> aux = this;
+        Node <Type> answer = null;
+        while(aux != null){            
+            if(aux.getInformation() == n){
+                answer = aux;break;
+            }
+            if(aux.hasChildren()){
+                answer = aux.getChildren().front().getNode(n);
+            }            
+            aux = aux.getPreviousNode();
+        }
+        return answer;
+    }
+
+    public void setChildTo(Node <Type> node, Type information){
         Node <Type> aux = this.children.getNode(node);
         if(aux != null){
             aux.addChild(information);
@@ -95,13 +109,13 @@ public class Node <Type> {
     public int howManyChildren(){
         return this.children.size();
     }
-/*
+
     public static void main(String [] args){
         Node <String> root = new Node <String> ("Caos");       
         root.addChild("Nix");
         root.addChild("Érebo");
         root.addChild("Gea");
-        root.setChildTo("Gea", "Temis");
+        root.setChildTo(, "Temis");
         root.setChildTo("Gea", "Cronos");
         root.setChildTo("Cronos", "Hestia");
         root.setChildTo("Cronos", "Poseidon");
@@ -127,5 +141,5 @@ public class Node <Type> {
 
         root.printRoot();
     }
-*/
+
 }

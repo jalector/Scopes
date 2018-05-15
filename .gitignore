@@ -1,5 +1,7 @@
-Estructuras/*.class
-Gramatica/*.class
 Gramatica/Yylex.java
 Gramatica/Parser.java
 Gramatica/java-cup*
+Estructuras/Node.class
+Estructuras/Queue.class
+Estructuras/Tree.class
+Estructuras/List.class
