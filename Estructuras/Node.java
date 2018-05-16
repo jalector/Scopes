@@ -70,7 +70,7 @@ public class Node <Type> {
     }
 
     public void setChildren(Queue <Type> children){
-        this.children = children;java
+        this.children = children;
     }
 
     public void addChild(Type child){
@@ -95,7 +95,7 @@ public class Node <Type> {
     public int howManyChildren(){
         return this.children.size();
     }
-/*
+
     public static void main(String [] args){
         Node <String> root = new Node <String> ("Caos");       
         root.addChild("Nix");
@@ -127,5 +127,5 @@ public class Node <Type> {
 
         root.printRoot();
     }
-*/
+
 }
