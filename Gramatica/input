@@ -10,9 +10,39 @@ class Prueba{
         a3= 2;
         boolean boli= true;
         float flotante1 = 10.1;
-        String cadena1= "Cualquier Cadena co~`^#$%&/()=" ;
+        String cadena1= "quien sabe #" ;
+
+        a1= 10;
+        fa= 13;
+
+        String nuevo= "D:";
+
+        if(a1 < fa){
+            nuevo= ":D";
+            a1= a1 + 1;
+
+            if(a1 < fa){
+                nuevo= ":D";
+                a1= a1 + 1;
+            }else{
+                nuevo= "D:";
+                a1 = a1 - 3;
+            }
+        }else{
+            nuevo= "D:";
+            a1 = a1 - 3;
+            
+            if(a1 < fa){
+                nuevo= ":D";
+                a1= a1 + 1;
+            }else{
+                nuevo= "D:";
+                a1 = a1 - 3;
+            }
+        }
+
         return a1;
-        
+
     }
 
     boolean esValido (int lol, int xd){

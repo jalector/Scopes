@@ -33,14 +33,15 @@ terminal LESS, LESSEQ, GREATER, GREATEREQ, EQUALS, DIFF, AND, OR, NOT;
 terminal ASSIGN;
 terminal COMMA;
 terminal ID, VOID, BYTE, SHORT, INT, LONG, BOOLEAN, STRING, FLOAT, DOUBLE;
-terminal RETURN;
+terminal IF, ELSE, RETURN;
 terminal REAL;
 terminal Integer NUMBER;
 terminal Boolean TRUE, FALSE;
 terminal String STRING_VALUE;
 
 non terminal program, stm_list, stm;
-non terminal dec_list, dec, param, func, tipo;
+non terminal inst, inst_list;
+non terminal dec_list, dec, param, func, tipo, cond;
 non terminal id_list, param_list, ret_value;
 non terminal expr, expr_ari, expr_b, expr_str;
 non terminal bool_cons;
@@ -69,11 +70,21 @@ dec				::= tipo ID id_list SEMI
 				| tipo ID ASSIGN expr SEMI
 				| ID ASSIGN expr SEMI;
 
+inst_list		::= inst inst_list
+				| inst;
+
+inst 			::= dec
+				| cond;
+
+cond			::= IF LPAREN expr_b RPAREN LCBRACKET inst_list RCBRACKET
+					ELSE LCBRACKET inst_list RCBRACKET
+				| IF LPAREN expr_b RPAREN LCBRACKET inst_list RCBRACKET;
+
 id_list			::= id_list COMMA ID
 				| ;		
 
-func			::= tipo ID LPAREN RPAREN LCBRACKET dec_list ret_value RCBRACKET
-				| tipo ID LPAREN param param_list RPAREN LCBRACKET dec_list ret_value RCBRACKET;				
+func			::= tipo ID LPAREN RPAREN LCBRACKET inst_list ret_value RCBRACKET
+				| tipo ID LPAREN param param_list RPAREN LCBRACKET inst_list ret_value RCBRACKET;				
 
 param			::= tipo ID; 
 

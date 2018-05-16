@@ -6,25 +6,7 @@ public class Queue <Type> {
         this.size = 0;
         this.node = null;
     }
-/*
-    public static void main(String [] args){
-        Queue <Integer> q = new Queue <Integer> ();
-        q.enqueue(1);
-        q.enqueue(2);
-        q.enqueue(3);
-        q.enqueue(4);
-        q.enqueue(5);
-        q.enqueue(6);
-       
-        q.printYou();
-        q.dequeue();
-        q.dequeue();
-        q.dequeue();
-        q.dequeue();
-        q.dequeue();
-        q.printYou();
-    }
-*/
+
     public void enqueue(Type element){
         if(this.isEmpty()){
             this.node = new Node <Type> (element);
@@ -52,26 +34,11 @@ public class Queue <Type> {
         return answer;
     }
     
-    public Type front(){
-        return this.node.getInformation();
+    public Node <Type> front(){
+        return this.node;
     }
 
-    public Node <Type> getNode(Type information){
-        Node <Type> aux = this.node;
-        Node <Type> answer = null;
-        while(aux != null){            
-            if(aux.getInformation() == information){
-                answer = aux;
-                break;
-            }
-            if(aux.hasChildren() && answer == null){
-                answer = aux.getChildren().getNode(information);
-            }            
-            aux = aux.getPreviousNode();
-        }
-        return answer;
-    }
-
+    
     public boolean isEmpty(){
         return this.node == null;
     }
@@ -88,15 +55,7 @@ public class Queue <Type> {
     public void printQueue(){
         Node <Type> aux = this.node;
         while(aux != null){
-            aux.printNode();
-            aux = aux.getPreviousNode();
-        }
-    }
-
-    public void printQueue(String str){
-        Node <Type> aux = this.node;
-        while(aux != null){
-            aux.printNode(str);
+            System.out.println(aux);
             aux = aux.getPreviousNode();
         }
     }
