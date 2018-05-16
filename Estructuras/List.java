@@ -79,6 +79,19 @@ public class List <Type> {
            answer = aux.getInformation();
         }
         return answer;
+    } 
+    public Node <Type> getChild(int position){
+        Node <Type> answer = null;
+        if(position >= 0 && position < this.size){
+            int index = 0;
+            Node <Type> aux = begin;
+            while(index < position){
+                aux = aux.getPreviousNode();
+                index++;
+            }
+           answer = aux;
+        }
+        return answer;
     }
 
     public void set(int position, Type information){

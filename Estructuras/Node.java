@@ -15,6 +15,8 @@ public class Node <Type> {
         this.previous = null;
         this.information = null;
         this.information = information;
+        this.children = new List <Type> ();
+        
     }
     
     /* Method's node */
@@ -45,7 +47,7 @@ public class Node <Type> {
     }
 
     public List <Type> getChildren(){
-        return this.children:
+        return this.children;
     }
 
     public void setChildren(List <Type> children){
@@ -53,7 +55,7 @@ public class Node <Type> {
     }
 
     public boolean hasChildren(){
-        return !this.children.size() == 0;
+        return !(this.children.size() == 0);
     }
 
   
