@@ -7,13 +7,14 @@
 public interface sym {
   /* terminals */
   public static final int DIVIDE = 8;
-  public static final int SHORT = 27;
+  public static final int SHORT = 30;
   public static final int EQUALS = 17;
-  public static final int DOUBLE = 33;
+  public static final int DOUBLE = 36;
   public static final int LPAREN = 10;
   public static final int GREATER = 15;
   public static final int SEMI = 12;
-  public static final int INT = 28;
+  public static final int PRIVATE = 25;
+  public static final int INT = 31;
   public static final int LESS = 13;
   public static final int MINUS = 6;
   public static final int RCBRACKET = 4;
@@ -24,30 +25,32 @@ public interface sym {
   public static final int COMMA = 23;
   public static final int CLASS = 2;
   public static final int PLUS = 5;
+  public static final int IF = 37;
   public static final int LESSEQ = 14;
   public static final int ASSIGN = 22;
-  public static final int IF = 34;
-  public static final int ID = 24;
+  public static final int ID = 27;
   public static final int EOF = 0;
-  public static final int BOOLEAN = 30;
-  public static final int RETURN = 36;
-  public static final int TRUE = 39;
+  public static final int BOOLEAN = 33;
+  public static final int RETURN = 39;
+  public static final int TRUE = 42;
   public static final int error = 1;
-  public static final int NUMBER = 38;
+  public static final int NUMBER = 41;
   public static final int MOD = 9;
-  public static final int VOID = 25;
-  public static final int BYTE = 26;
-  public static final int REAL = 37;
+  public static final int VOID = 28;
+  public static final int BYTE = 29;
+  public static final int REAL = 40;
   public static final int TIMES = 7;
-  public static final int STRING_VALUE = 41;
-  public static final int ELSE = 35;
+  public static final int STRING_VALUE = 44;
+  public static final int ELSE = 38;
   public static final int LCBRACKET = 3;
-  public static final int FLOAT = 32;
-  public static final int LONG = 29;
+  public static final int PROTECTED = 26;
+  public static final int FLOAT = 35;
+  public static final int PUBLIC = 24;
+  public static final int LONG = 32;
   public static final int GREATEREQ = 16;
-  public static final int STRING = 31;
+  public static final int STRING = 34;
   public static final int DIFF = 18;
-  public static final int FALSE = 40;
+  public static final int FALSE = 43;
   public static final String[] terminalNames = new String[] {
   "EOF",
   "error",
@@ -73,6 +76,9 @@ public interface sym {
   "NOT",
   "ASSIGN",
   "COMMA",
+  "PUBLIC",
+  "PRIVATE",
+  "PROTECTED",
   "ID",
   "VOID",
   "BYTE",

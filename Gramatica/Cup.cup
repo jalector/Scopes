@@ -32,6 +32,7 @@ terminal PLUS, MINUS, TIMES, DIVIDE, MOD, LPAREN, RPAREN, SEMI;
 terminal LESS, LESSEQ, GREATER, GREATEREQ, EQUALS, DIFF, AND, OR, NOT;
 terminal ASSIGN;
 terminal COMMA;
+terminal PUBLIC, PRIVATE, PROTECTED;
 terminal ID, VOID, BYTE, SHORT, INT, LONG, BOOLEAN, STRING, FLOAT, DOUBLE;
 terminal IF, ELSE, RETURN;
 terminal REAL;
@@ -40,8 +41,9 @@ terminal Boolean TRUE, FALSE;
 terminal String STRING_VALUE;
 
 non terminal program, stm_list, stm;
+non terminal access_mod;
 non terminal inst, inst_list;
-non terminal dec_list, dec, param, func, tipo, cond;
+non terminal call_method, dec_list, dec, param, func, tipo, cond;
 non terminal id_list, param_list, ret_value;
 non terminal expr, expr_ari, expr_b, expr_str;
 non terminal bool_cons;
@@ -55,7 +57,8 @@ precedence left TIMES, DIVIDE, MOD;
 precedence left NOT;
 
 
-program 		::= CLASS ID LCBRACKET stm_list RCBRACKET;
+program 		::= CLASS ID LCBRACKET stm_list RCBRACKET
+				| access_mod CLASS ID LCBRACKET stm_list RCBRACKET;
 
 stm_list		::= stm stm_list
 				| stm;
@@ -68,13 +71,20 @@ dec_list		::= dec dec_list
 
 dec				::= tipo ID id_list SEMI
 				| tipo ID ASSIGN expr SEMI
-				| ID ASSIGN expr SEMI;
+				| ID ASSIGN expr SEMI
+				| access_mod tipo ID id_list SEMI
+				| access_mod tipo ID ASSIGN expr SEMI
+				| access_mod ID ASSIGN expr SEMI;
 
 inst_list		::= inst inst_list
 				| inst;
 
 inst 			::= dec
-				| cond;
+				| cond
+				| call_method;
+
+call_method		::= ID LPAREN RPAREN SEMI
+				| ID LPAREN ID id_list RPAREN SEMI;
 
 cond			::= IF LPAREN expr_b RPAREN LCBRACKET inst_list RCBRACKET
 					ELSE LCBRACKET inst_list RCBRACKET
@@ -84,7 +94,9 @@ id_list			::= id_list COMMA ID
 				| ;		
 
 func			::= tipo ID LPAREN RPAREN LCBRACKET inst_list ret_value RCBRACKET
-				| tipo ID LPAREN param param_list RPAREN LCBRACKET inst_list ret_value RCBRACKET;				
+				| tipo ID LPAREN param param_list RPAREN LCBRACKET inst_list ret_value RCBRACKET
+				| access_mod tipo ID LPAREN RPAREN LCBRACKET inst_list ret_value RCBRACKET
+				| access_mod tipo ID LPAREN param param_list RPAREN LCBRACKET inst_list ret_value RCBRACKET;	
 
 param			::= tipo ID; 
 
@@ -122,6 +134,10 @@ expr_str		::= STRING_VALUE
 expr         	::= expr_ari
 				| expr_b
 				| expr_str;
+
+access_mod		::= PUBLIC
+				| PRIVATE
+				| PROTECTED;				
 
 tipo			::= VOID
 				| BYTE

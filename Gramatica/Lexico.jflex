@@ -16,6 +16,9 @@ import java_cup.runtime.Symbol;
 %%
 
 "class"					{return new Symbol(sym.CLASS, new String(yytext()));}
+"public"				{return new Symbol(sym.PUBLIC, new String(yytext()));}
+"private"				{return new Symbol(sym.PRIVATE, new String(yytext()));}
+"protected"				{return new Symbol(sym.PROTECTED, new String(yytext()));}
 "void"					{return new Symbol(sym.VOID, new String(yytext()));}
 "byte"					{return new Symbol(sym.BYTE, new String(yytext()));}
 "short"					{return new Symbol(sym.SHORT, new String(yytext()));}

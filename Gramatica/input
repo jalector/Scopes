@@ -1,10 +1,10 @@
-class Prueba{
+protected class Prueba{
     int a1, a2, a3, contadorA, contadorB;
     int resultado;
     a1= 5 + 5;
     a2= 20 - 20;
 
-    int calcularRes () {
+    public int calcularRes () {
         int a1;
         int fa = 3;
         a3= 2;
@@ -45,14 +45,14 @@ class Prueba{
 
     }
 
-    boolean esValido (int lol, int xd){
+    private boolean esValido (int lol, int xd){
         boolean booli;
         booli= lol < xd;
 
         return true;
     }
 
-    void test(int index){
+    protected void test(int index){
         int algo;
     }
 
@@ -64,4 +64,8 @@ class Prueba{
 
         return (192.168 + 10.1 + 0.255);
     } 
+
+    void pruebaLlamarMetodos(){
+        calcularDerivada(xd);
+    }
 }
