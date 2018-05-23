@@ -35,7 +35,7 @@ public class Tree <Type> {
     public boolean addChildTo(Node <Type> subtree, Type node, Type information){
         boolean done = false;
         if(subtree.getInformation() == node){
-            subtree.getChildren().addLast(information);
+            subtree.addChild(new Node <Type> (information));
             done = true;
         }else if (subtree.hasChildren()){
             List <Type> l = subtree.getChildren();
@@ -45,25 +45,12 @@ public class Tree <Type> {
                 if(done) break;
             }
         }
+        this.size++;
         return done;
     }
 
-    public Node <Type> get Parent(<Type> subtree, Type information){
-        Node <Type> aux = null,
-                    answer = null;
-            if(subtree.getInformation() == information){
-                aux = subtree;
-            }else if (subtree.hasChildren()){
-                List <Type> l = subtree.getChildren();
-                for(int i = 0, e = l.size(); i < e; i++){
-                    Node <Type> child = l.getChild(i);
-                    aux = this.getParent(child, information);
-                    if(aux != null) break;
-                }
-                if(aux != null)answer = subtree 
-            }
-        return answer;
-        
+    public Node <Type> getParent(Node <Type> subtree, Type information){
+       return null;
     }
 
     public List <Type> children(Node <Type> node){
@@ -104,14 +91,16 @@ public class Tree <Type> {
             }
         }
     }
-
+    //TODO: BUSCAR PARIENTES LEJANOS.
+    public Node <Type> getParentOfParents(){
+        return null;
+    }
     public static void main(String [] args){
         Tree <String> t = new Tree <String> ("Caos");
 
         t.addChildTo(t.getRoot(), "Caos", "Nix");
         t.addChildTo(t.getRoot(), "Caos", "Érebo");
         t.addChildTo(t.getRoot(), "Caos", "Gea");
-
         t.addChildTo(t.getRoot(), "Gea", "Temis");
         t.addChildTo(t.getRoot(), "Gea", "Cronos");
         t.addChildTo(t.getRoot(), "Cronos", "Hestia");
@@ -138,3 +127,31 @@ public class Tree <Type> {
         t.print(t.getRoot());
     }
 }
+
+/*
+    > Buscamos un padre lejano.
+    > Tenemos un hijo.
+        > obtenemos su padre directo.
+        > (1)Nos moviemos a la derecha haste que se null.
+            > Nos saltamos las funciones, sólo variables.
+        > Tenemos el primer nodo.
+        > Es Root()
+            Sí:     > Buscamos desde el primer hijo hasta al ultimo
+                    > Nos saltamos todas las funciones
+            No:     > Regresamos a la etiqueta (1)
+
+    searchParent(Node <Type> node, Type information){
+        Node <Type> parent = node.getParent();
+        Node <Type> answer = null;
+        while(true){
+            if(parent.getInformation() == information){
+
+            }else{
+                if(parent.getNextNode() != null)
+                    parent = parent.getNextNode();
+                else 
+                    break;
+            }
+        }
+    }  
+*/

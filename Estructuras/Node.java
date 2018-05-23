@@ -1,11 +1,12 @@
 public class Node <Type> {
-    private Node <Type> next, previous;
+    private Node <Type> next, previous, parent;
     private Type information;
     private List <Type> children;
 
     public Node(Type information){
         this.next = null;
         this.previous = null;
+        this.parent = null;
         this.information = information;
         this.children = new List <Type> ();
     }
@@ -13,6 +14,7 @@ public class Node <Type> {
     public Node(){
         this.next = null;
         this.previous = null;
+        this.parent = null;
         this.information = null;
         this.information = information;
         this.children = new List <Type> ();
@@ -34,6 +36,13 @@ public class Node <Type> {
         return this.previous;
     }
 
+    public void setParentNode(Node <Type> node){
+        this.parent = node;
+    }
+    public Node <Type> getParentNode(){
+        return this.parent;
+    }
+
     public Type getInformation(){
         return this.information;
     }
@@ -52,6 +61,11 @@ public class Node <Type> {
 
     public void setChildren(List <Type> children){
         this.children = children;
+    }
+
+    public void addChild(Node <Type> node){
+        node.setParentNode(this);
+        this.children.addLast(node);
     }
 
     public boolean hasChildren(){

@@ -21,7 +21,11 @@ public class Value {
     private int returnValue;
 
     public Value(int accessMode, int type, String lexema, Object value, int returnValue){
-        this.accessMode 
+        this.accessMode = accessMode;
+        this.type = type;
+        this.lexema = lexema;
+        this.value = value;
+        this.returnValue = returnValue;
     }
 
     public void setAccessmode (int accessMode){
@@ -41,7 +45,7 @@ public class Value {
     }
 
     public int getaccessMode(){
-        return this.accessMode ;
+        return this.accessMode;
     }
     public int getType(){
         return this.type;
@@ -58,7 +62,7 @@ public class Value {
 
     public String toString(){
         //return "{M. accesso: "+this.accessMode+", Tipo: "+this.type+", Lexema: "+this.lex+", Value: "+this.value+", Return: "+this.returnValue+"}";
-        return "{"+this.accessMode+", "+this.type+", "+this.lex+", "+this.value+", "+this.returnValue+"}";
+        return "{"+this.accessMode+", "+this.type+", "+this.lexema+", "+this.value+", "+this.returnValue+"}";
     }
 
 
