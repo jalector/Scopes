@@ -68,7 +68,7 @@ program 		::= CLASS ID:i LCBRACKET stm_list RCBRACKET{:
 stm_list		::= stm stm_list
 				| stm;
 
-stm				::= decgit
+stm				::= dec
 				| func;
 
 dec_list		::= dec dec_list
