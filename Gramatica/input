@@ -1,4 +1,4 @@
-protected class Prueba{
+public class Prueba{
     int a1, a2, a3, contadorA, contadorB;
     int resultado;
     a1= 5 + 5;
@@ -66,6 +66,8 @@ protected class Prueba{
     } 
 
     void pruebaLlamarMetodos(){
+        int xd= 10;
         calcularDerivada(xd);
+        calcularDerivada(xd, xd, xd);
     }
 }
