@@ -22,8 +22,10 @@ scan with {:
 :}
 
 action code{:
+	Tree <Value> scope;
 	int integer = 1;
 	Pool pool = new Pool();
+	
 :}
 
 terminal CLASS;
@@ -57,13 +59,16 @@ precedence left TIMES, DIVIDE, MOD;
 precedence left NOT;
 
 
-program 		::= CLASS ID LCBRACKET stm_list RCBRACKET
-				| access_mod CLASS ID LCBRACKET stm_list RCBRACKET;
+program 		::= CLASS ID:i LCBRACKET stm_list RCBRACKET{:
+					tree = new Tree <Value> (new Value(Value.FRIEDLY, Value.CLASS, i.toString(), Value.VOID));
+				:}
+				| access_mod CLASS ID LCBRACKET stm_list RCBRACKET{:
+				:};
 
 stm_list		::= stm stm_list
 				| stm;
 
-stm				::= dec
+stm				::= decgit
 				| func;
 
 dec_list		::= dec dec_list

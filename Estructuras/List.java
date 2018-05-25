@@ -66,6 +66,17 @@ public class List <Type> {
         this.size++;
     }
 
+     public void addLast(Node <Type> newNode){
+        if(this.isEmpty()){
+            begin = end = newNode;
+        }else{
+            end.setPreviousNode(newNode);
+            newNode.setNextNode(end);
+            end = newNode;
+        }
+        this.size++;
+    }
+
 
     public Type get(int position){
         Type answer = null;
