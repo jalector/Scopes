@@ -1,25 +1,32 @@
 public class Value {
-    public static final int ACCESS_FRIENDLY = 0;
-    public static final int ACCESS_PUBLIC = 1;
-    public static final int ACCESS_PRIVATE = 2;
-    public static final int ACCESS_PROTECTED = 3;
+    public static final int FRIENDLY = 0;
+    public static final int PUBLIC = 1;
+    public static final int PRIVATE = 2;
+    public static final int PROTECTED = 3;
 
-    public static final int TYPE_VOID = 0;
-    public static final int TYPE_STRING = 2;
-    public static final int TYPE_BYTE = 3;
-    public static final int TYPE_SHORT = 4;
-    public static final int TYPE_LONG = 5;    
-    public static final int TYPE_INT = 6;
-    public static final int TYPE_FLOAT = 7;
-    public static final int TYPE_DOUBLE = 8;
-    public static final int TYPE_OTHER = 9;
-    
+    public static final int VOID = 0;
+    public static final int STRING = 2;
+    public static final int BYTE = 3;
+    public static final int SHORT = 4;
+    public static final int LONG = 5;    
+    public static final int INT = 6;
+    public static final int FLOAT = 7;
+    public static final int DOUBLE = 8;
+    public static final int BOOLEAN = 9;
+    public static final int OTHER = 10;
+
+    public static final int CLASS = 0;
+    public static final int VARIABLE = 1;
+    public static final int PARAM = 2;
+    public static final int FUNCTION = 3;
+
     private int accessMode;
     private int type;
     private String lexema;
     private Object value;
     private int returnValue;
 
+    //public - {var | fun | param} - nombre - valor -  {int | String | double| boolean | FLOAT | ..}
     public Value(int accessMode, int type, String lexema, Object value, int returnValue){
         this.accessMode = accessMode;
         this.type = type;
@@ -58,6 +65,28 @@ public class Value {
     }
     public int getReturnValue(){
         return this.returnValue;
+    }
+
+    public static int accessMode(String accessMode){
+        switch(accessMode){
+            case "":
+                return this.ACCESS_FRIENDLY;
+                break;
+            case "public":
+                return this.ACCESS_PUBLIC;
+                break;
+            case "private":
+                return this.ACCESS_PRIVATE;
+                break;
+        }
+    }
+
+    public static int type(Strin type){
+        return 0;
+    }
+
+    public static int return(Strin returnValue){
+        return 0;
     }
 
     public String toString(){
