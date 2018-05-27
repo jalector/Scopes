@@ -69,24 +69,35 @@ public class Value {
 
     public static int accessMode(String accessMode){
         switch(accessMode){
-            case "":
-                return this.ACCESS_FRIENDLY;
-                break;
-            case "public":
-                return this.ACCESS_PUBLIC;
-                break;
-            case "private":
-                return this.ACCESS_PRIVATE;
-                break;
+            case "":            return this.FRIENDLY;   break;
+            case "public":      return this.PUBLIC;     break;
+            case "private":     return this.PRIVATE;    break;
+            case "protected":   return this.PROTECTED;  break;
         }
     }
 
     public static int type(Strin type){
-        return 0;
+        switch(type){
+            case "var":     return this.VARIABLE;   break;
+            case "fun":     return this.FUNCTION;   break;
+            case "param":   return this.PARAM;      break;
+            case "class":   return this.CLASS;      break;
+        }
     }
 
     public static int return(Strin returnValue){
-        return 0;
+        switch(returnValue){
+            case "void":        return this.VOID ;         break;
+            case "String":      return this.STRING ;       break;
+            case "byte":        return this.BYTE ;         break;
+            case "short":       return this.SHORT ;        break;
+            case "long":        return this.LONG ;         break;
+            case "int":         return this.INT ;          break;
+            case "float":       return this.FLOAT ;        break;
+            case "double":      return this.DOUBLE ;       break;
+            case "boolean":     return this.BOOLEAN ;      break;
+            default:            return this.OTHER ;        break;
+        }
     }
 
     public String toString(){
