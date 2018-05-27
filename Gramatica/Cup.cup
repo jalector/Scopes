@@ -22,7 +22,7 @@ scan with {:
 :}
 
 action code{:
-	Tree <Value> scope;
+	
 	int integer = 1;
 	Pool pool = new Pool();
 	
@@ -60,7 +60,7 @@ precedence left NOT;
 
 
 program 		::= CLASS ID:i LCBRACKET stm_list RCBRACKET{:
-					tree = new Tree <Value> (new Value(Value.FRIEDLY, Value.CLASS, i.toString(), Value.VOID));
+					//tree = new Tree <Value> (new Value(Value.FRIEDLY, Value.CLASS, i.toString(), Value.VOID));
 				:}
 				| access_mod CLASS ID LCBRACKET stm_list RCBRACKET{:
 				:};
