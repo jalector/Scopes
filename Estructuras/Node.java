@@ -1,3 +1,5 @@
+package Estructuras;
+
 public class Node <Type> {
     private Node <Type> next, previous, parent;
     private Type information;

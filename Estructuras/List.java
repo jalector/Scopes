@@ -1,3 +1,4 @@
+package Estructuras;
 public class List <Type> {
     private Node <Type> begin, end;
     private int size;

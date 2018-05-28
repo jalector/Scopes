@@ -1,3 +1,4 @@
+package Estructuras;
 public class Queue <Type> {
     private int size;
     private Node <Type> node; 

@@ -1,3 +1,4 @@
+package Estructuras;
 public class Value {
     public static final int FRIENDLY = 0;
     public static final int PUBLIC = 1;
@@ -26,7 +27,23 @@ public class Value {
     private Object value;
     private int returnValue;
 
-    //public - {var | fun | param} - nombre - valor -  {int | String | double| boolean | FLOAT | ..}
+    /*
+
+        - int:      Modificador de acceso
+                    {public | private | protected | friendly}
+
+        - int:      Tipo
+                    {var | fun | param}
+
+        - String:   Nombre
+                    {"*"}
+                    
+        - Object:   Valor
+                    {*}
+
+        - int:      Valor de retorno
+                    {int | String | double| boolean | FLOAT | ..}
+    */
     public Value(int accessMode, int type, String lexema, Object value, int returnValue){
         this.accessMode = accessMode;
         this.type = type;
@@ -68,36 +85,42 @@ public class Value {
     }
 
     public static int accessMode(String accessMode){
+        int result = -1;
         switch(accessMode){
-            case "":            return this.FRIENDLY;   break;
-            case "public":      return this.PUBLIC;     break;
-            case "private":     return this.PRIVATE;    break;
-            case "protected":   return this.PROTECTED;  break;
+            case "":            result = FRIENDLY;   break;
+            case "public":      result = PUBLIC;     break;
+            case "private":     result = PRIVATE;    break;
+            case "protected":   result = PROTECTED;  break;
         }
+        return result;
     }
 
-    public static int type(Strin type){
+    public static int type(String type){
+        int result = -1;
         switch(type){
-            case "var":     return this.VARIABLE;   break;
-            case "fun":     return this.FUNCTION;   break;
-            case "param":   return this.PARAM;      break;
-            case "class":   return this.CLASS;      break;
+            case "var":     result =  VARIABLE;   break;
+            case "fun":     result =  FUNCTION;   break;
+            case "param":   result =  PARAM;      break;
+            case "class":   result =  CLASS;      break;
         }
+        return result;
     }
 
-    public static int return(Strin returnValue){
+    public static int returnValue(String returnValue){
+        int result = -1;
         switch(returnValue){
-            case "void":        return this.VOID ;         break;
-            case "String":      return this.STRING ;       break;
-            case "byte":        return this.BYTE ;         break;
-            case "short":       return this.SHORT ;        break;
-            case "long":        return this.LONG ;         break;
-            case "int":         return this.INT ;          break;
-            case "float":       return this.FLOAT ;        break;
-            case "double":      return this.DOUBLE ;       break;
-            case "boolean":     return this.BOOLEAN ;      break;
-            default:            return this.OTHER ;        break;
+            case "void":        result =  VOID ;         break;
+            case "String":      result =  STRING ;       break;
+            case "byte":        result =  BYTE ;         break;
+            case "short":       result =  SHORT ;        break;
+            case "long":        result =  LONG ;         break;
+            case "int":         result =  INT ;          break;
+            case "float":       result =  FLOAT ;        break;
+            case "double":      result =  DOUBLE ;       break;
+            case "boolean":     result =  BOOLEAN ;      break;
+            default:            result =  OTHER ;        break;
         }
+        return result;
     }
 
     public String toString(){

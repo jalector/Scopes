@@ -1,0 +1,9 @@
+public class Prueba{
+    String nombre = "Juda"; 
+    int contador;
+    int c = 2+3;
+    public void suma (int a, int b) {
+        int cont;
+    }
+}
+:fin:

@@ -15,6 +15,7 @@ import java_cup.runtime.Symbol;
 %eofval}
 %%
 
+":fin:"		       			{return new Symbol(sym.POINT, new String(yytext()));}
 "class"					{return new Symbol(sym.CLASS, new String(yytext()));}
 "public"				{return new Symbol(sym.PUBLIC, new String(yytext()));}
 "private"				{return new Symbol(sym.PRIVATE, new String(yytext()));}

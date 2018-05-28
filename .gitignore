@@ -1,14 +1,6 @@
 Gramatica/Yylex.java
-Gramatica/Yylex.class
 Gramatica/Parser.java
-Gramatica/Parser.class
 Gramatica/sym.java
-Gramatica/sym.class
-Gramatica/java-cup-11b.jar
-Gramatica/java-cup-11b-runtime.jar
-Estructuras/Tree.class
-Estructuras/List.class
-Estructuras/Queue.class
-Estructuras/Node.class
-Estructuras/Queue.class
-Estructuras/Node.class
+Gramatica/*.class
+Gramatica/*.jar
+Estructuras/*.class

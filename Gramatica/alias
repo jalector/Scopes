@@ -1,6 +1,6 @@
 alias b="rm Parser* sym* Yylex*"
 alias g="java -jar java-cup-11b.jar -interface -parser Parser Cup.cup;jflex Lexico.jflex"
-alias c="javac -cp java-cup-11b-runtime.jar:. *.java"
-alias e="java -cp java-cup-11b-runtime.jar:. Parser"
+alias c="javac -cp "java-cup-11b-runtime.jar:../:." *.java"
+alias e="java -cp "java-cup-11b-runtime.jar:../:." Parser"
 alias t="b && g && c"
 

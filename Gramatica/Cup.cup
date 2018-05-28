@@ -1,5 +1,6 @@
 import java.io.*;
 import java_cup.runtime.*;
+import Estructuras.*;
 
 parser code {:
 	Yylex lexico;
@@ -22,16 +23,14 @@ scan with {:
 :}
 
 action code{:
-	//Tree tree;
+	Tree tree;
 	int integer = 1;
-	Pool pool = new Pool();
-	
 :}
 
 terminal CLASS;
 terminal LCBRACKET, RCBRACKET;
 terminal PLUS, MINUS, TIMES, DIVIDE, MOD, LPAREN, RPAREN, SEMI;
-terminal LESS, LESSEQ, GREATER, GREATEREQ, EQUALS, DIFF, AND, OR, NOT;
+terminal LESS, LESSEQ, GREATER, GREATEREQ, EQUALS, DIFF, AND, OR, NOT, POINT;
 terminal ASSIGN;
 terminal COMMA;
 terminal PUBLIC, PRIVATE, PROTECTED;
@@ -42,10 +41,11 @@ terminal Integer NUMBER;
 terminal Boolean TRUE, FALSE;
 terminal String STRING_VALUE;
 
-non terminal program, stm_list, stm;
+non terminal program, stm_list, stm, file;
 non terminal access_mod;
 non terminal inst, inst_list;
-non terminal call_method, dec_list, dec, param, func, tipo, cond;
+non terminal call_method, dec_list, param, func, tipo, cond;
+non terminal Node <Value> dec;
 non terminal id_list, param_list, ret_value;
 non terminal expr, expr_ari, expr_b, expr_str;
 non terminal bool_cons;
@@ -58,12 +58,16 @@ precedence left PLUS, MINUS;
 precedence left TIMES, DIVIDE, MOD;
 precedence left NOT;
 
+file ::= program POINT{:
+	tree.print(tree.getRoot());
+:};
 
+//Comenzamos con la declaración de la clase
 program 		::= CLASS ID:i LCBRACKET stm_list RCBRACKET{:
-					//tree = new Tree <Value> (new Value(Value.FRIEDLY, Value.CLASS, i.toString(), Value.VOID));
+					tree = new Tree <Value> (new Value(Value.FRIENDLY, Value.CLASS, i.toString(), null, Value.VOID));
 				:}
-				| access_mod CLASS ID LCBRACKET stm_list RCBRACKET{:
-
+				| access_mod:am CLASS:c ID:id LCBRACKET stm_list RCBRACKET{:
+					tree = new Tree <Value> (new Value(Value.accessMode(am.toString()), Value.CLASS, id.toString(), null, Value.VOID));
 				:};
 
 stm_list		::= stm stm_list
@@ -75,9 +79,14 @@ stm				::= dec
 dec_list		::= dec dec_list
 				| dec; 				
 
-dec				::= tipo ID id_list SEMI
-				| tipo ID ASSIGN expr SEMI
-				| ID ASSIGN expr SEMI
+dec				::= tipo ID:id id_list SEMI{:
+				:}
+				| tipo ID ASSIGN expr SEMI{:
+
+				:}
+				| ID ASSIGN expr SEMI{:
+				
+				:}
 				| access_mod tipo ID id_list SEMI
 				| access_mod tipo ID ASSIGN expr SEMI
 				| access_mod ID ASSIGN expr SEMI;
@@ -99,8 +108,11 @@ cond			::= IF LPAREN expr_b RPAREN LCBRACKET inst_list RCBRACKET
 id_list			::= id_list COMMA ID
 				| ;		
 
-func			::= tipo ID LPAREN RPAREN LCBRACKET inst_list ret_value RCBRACKET
-				| tipo ID LPAREN param param_list RPAREN LCBRACKET inst_list ret_value RCBRACKET
+//Declaración de funciones
+func			::= tipo:t ID:id LPAREN RPAREN LCBRACKET inst_list ret_value RCBRACKET{:
+					//tree.addChildCN(new Value(Value.FRIENDLY, Value.FUNCTION, id.toString(), null, Value.VOID));
+				:}
+				| tipo  ID LPAREN param param_list RPAREN LCBRACKET inst_list ret_value RCBRACKET
 				| access_mod tipo ID LPAREN RPAREN LCBRACKET inst_list ret_value RCBRACKET
 				| access_mod tipo ID LPAREN param param_list RPAREN LCBRACKET inst_list ret_value RCBRACKET;	
 
@@ -112,48 +124,114 @@ param_list		::= param_list COMMA param
 ret_value		::= RETURN expr SEMI
 				| ;
 
-expr_ari		::= expr_ari PLUS expr_ari
-				| expr_ari MINUS expr_ari
-				| expr_ari TIMES expr_ari					
-				| expr_ari DIVIDE expr_ari					
-				| expr_ari MOD expr_ari					
-				| LPAREN expr_ari RPAREN					
-				| NUMBER 
-				| REAL					
-				| ID;
+expr_ari		::= expr_ari:a PLUS expr_ari:b{:
+					RESULT = Integer.toString(Integer.parseInt(a.toString()) + Integer.parseInt(b.toString()));
+				:}
+				| expr_ari:a MINUS expr_ari:b{:
+					RESULT = Integer.toString(Integer.parseInt(a.toString()) - Integer.parseInt(b.toString()));
+				:}
+				| expr_ari:a TIMES expr_ari:b{:
+					RESULT = Integer.toString(Integer.parseInt(a.toString()) * Integer.parseInt(b.toString()));
+				:}
+				| expr_ari:a DIVIDE expr_ari:b{:
+					if(Integer.parseInt(b.toString()) != 0){
+		                RESULT = Integer.toString(Integer.parseInt(a.toString()) + Integer.parseInt(b.toString()));
+		            }else{
+		                System.out.println("Error semantico, division por cero.");
+		                System.exit(0);
+		            }
+				:}
+				| expr_ari:a MOD expr_ari:b{:
+					RESULT = Integer.toString(Integer.parseInt(a.toString()) % Integer.parseInt(b.toString()));
+				:}
+				| LPAREN expr_ari:e RPAREN{:
+					RESULT = e;
+				:}
+				| NUMBER:n {:
+					RESULT = n;
+				:}
+				| REAL:n {:
+					RESULT= n;
+				:}
+				| ID:i {:
+				:};
 
-expr_b 			::= expr_ari LESS expr_ari
-				| expr_ari LESSEQ expr_ari
-				| expr_ari GREATER expr_ari
-				| expr_ari GREATEREQ expr_ari
-				| expr_ari DIFF expr_ari
-				| expr_ari EQUALS expr_ari
-				| NOT expr
-				| expr OR expr
-				| expr AND expr
-				| LPAREN expr_b RPAREN
-				| bool_cons;
+expr_b 			::= expr_ari:a LESS expr_ari:b{:
+					RESULT = (Integer.parseInt(a.toString()) < Integer.parseInt(b.toString()))?"true":"false";
+				:}
+				| expr_ari:a LESSEQ expr_ari:b{:
+					RESULT = (Integer.parseInt(a.toString()) <= Integer.parseInt(b.toString()))?"true":"false";
+				:}
+				| expr_ari:a GREATER expr_ari:b{:
+					RESULT = (Integer.parseInt(a.toString()) > Integer.parseInt(b.toString()))?"true":"false";
+				:}
+				| expr_ari:a GREATEREQ expr_ari:b{:
+					RESULT = (Integer.parseInt(a.toString()) >= Integer.parseInt(b.toString()))?"true":"false";
+				:}
+				| expr_ari:a DIFF expr_ari:b{: 
+					if( (a.toString().equals("true") || a.toString().equals("false")) 
+						&& (b.toString().equals("true") || b.toString().equals("false"))){
+						RESULT = (Boolean.parseBoolean(a.toString()) != Boolean.parseBoolean(b.toString()))?"true":"false";
+					}else{
+						RESULT = (Integer.parseInt(a.toString()) != Integer.parseInt(b.toString()))?"true":"false";
+					}					
+				:}
+				| expr_ari:a EQUALS expr_ari:b{:
+					if( (a.toString().equals("true") || a.toString().equals("false")) 
+						&& (b.toString().equals("true") || b.toString().equals("false"))){
+						RESULT = (Boolean.parseBoolean(a.toString()) == Boolean.parseBoolean(b.toString()))?"true":"false";
+					}else{
+						RESULT = (Integer.parseInt(a.toString()) == Integer.parseInt(b.toString()))?"true":"false";
+					}
+				:}
+				| NOT expr:b{:
+					if( b.toString().equals("true") || b.toString().equals("false")){
+						RESULT = (!Boolean.parseBoolean(b.toString()))?"true":"false";
+					}else{
+						System.out.println(b.toString()+", no es \"un boolean\""+"\t");
+					}					
+				:}
+				| expr:a OR expr:b{:
+					RESULT = (Boolean.parseBoolean(a.toString()) || Boolean.parseBoolean(b.toString()))?"true":"false";
+				:}
+				| expr:a AND expr:b{:
+					RESULT = (Boolean.parseBoolean(a.toString()) && Boolean.parseBoolean(b.toString()))?"true":"false";
+				:} 
+				| LPAREN expr_b:e RPAREN{:
+					RESULT = e;
+				:}
+				| bool_cons:c{:RESULT = c;:};
 
-expr_str		::= STRING_VALUE
-				| expr PLUS expr;
+expr_str		::= STRING_VALUE:sv {:
+					RESULT = sv.toString();
+				:}
+				| expr:a PLUS expr:b{:
+					RESULT = a.toString() + b.toString();
+				:};
 
-expr         	::= expr_ari
-				| expr_b
-				| expr_str;
+expr         	::= expr_ari:e{:
+					RESULT = e;
+				:}
+				| expr_b:e{:
+					RESULT = e;
+				:}
+				| expr_str:e{
+					RESULT = e;
+				:};
 
-access_mod		::= PUBLIC
-				| PRIVATE
-				| PROTECTED;				
+access_mod		::= PUBLIC {:RESULT = "public";:}
+				| PRIVATE{:RESULT = "private";:}
+				| PROTECTED{:RESULT = "protected";:};
 
-tipo			::= VOID
-				| BYTE
-				| SHORT
-				| INT
-				| LONG
-				| BOOLEAN
-				| STRING
-				| FLOAT
-				| DOUBLE;		
+tipo			::= VOID{:RESULT = "void"; :}
+				| BYTE{:RESULT = "byte"; :}
+				| SHORT{:RESULT = "short"; :}
+				| INT{:RESULT = "int"; :}
+				| LONG{:RESULT = "long"; :}
+				| BOOLEAN{:RESULT = "boolean"; :}
+				| STRING{:RESULT = "string"; :}
+				| FLOAT{:RESULT = "float"; :}
+				| DOUBLE{:RESULT = "double"; :};
 
-bool_cons		::= FALSE
-				| TRUE;
+bool_cons		::= FALSE{:RESULT ="false ";:}
+				| TRUE {:RESULT ="true";:};

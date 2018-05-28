@@ -1,6 +1,8 @@
+package Estructuras;
+
 public class Tree <Type> {
     private Node <Type> root;
-    private Node <Type> currentNode;
+    public Node <Type> currentNode;
     private int size;
 
     public Tree(Type name){
@@ -15,6 +17,12 @@ public class Tree <Type> {
 
     public boolean isRoot(Node <Type> node){
         return (node == this.root);
+    }
+
+    public Node <Type> addChildCN(Type information){
+        Node <Type> answer = new Node <Type> (information);
+        this.currentNode.addChild(answer);
+        return answer;
     }
 
     public Node <Type> getChild(Node <Type> subtree, Type information){
@@ -32,17 +40,17 @@ public class Tree <Type> {
         return answer;
     }
 
-    public boolean addChildTo(Node <Type> subtree, Type node, Type information){
-        boolean done = false;
+    public Node <Type>  addChildTo(Node <Type> subtree, Type node, Type information){
+        Node <Type> done = null;
         if(subtree.getInformation() == node){
-            subtree.addChild(new Node <Type> (information));
-            done = true;
+            done = new Node <Type> (information);
+            subtree.addChild(done);
         }else if (subtree.hasChildren()){
             List <Type> l = subtree.getChildren();
             for(int i = 0, e = l.size(); i < e; i++){
                 Node <Type> child = l.getChild(i);
                 done = this.addChildTo(child, node, information);
-                if(done) break;
+                if(done != null) break;
             }
         }
         this.size++;
@@ -95,37 +103,43 @@ public class Tree <Type> {
     public Node <Type> getParentOfParents(){
         return null;
     }
+/*
     public static void main(String [] args){
         Tree <String> t = new Tree <String> ("Caos");
 
-        t.addChildTo(t.getRoot(), "Caos", "Nix");
-        t.addChildTo(t.getRoot(), "Caos", "Érebo");
-        t.addChildTo(t.getRoot(), "Caos", "Gea");
-        t.addChildTo(t.getRoot(), "Gea", "Temis");
-        t.addChildTo(t.getRoot(), "Gea", "Cronos");
-        t.addChildTo(t.getRoot(), "Cronos", "Hestia");
-        t.addChildTo(t.getRoot(), "Cronos", "Poseidon");
-        t.addChildTo(t.getRoot(), "Cronos", "Zeus");
-        t.addChildTo(t.getRoot(), "Zeus", "Hefesto");
-        t.addChildTo(t.getRoot(), "Zeus", "Hebe");
-        t.addChildTo(t.getRoot(), "Zeus", "Ares");
-        t.addChildTo(t.getRoot(), "Zeus", "Apolo");
-        t.addChildTo(t.getRoot(), "Zeus", "Atenea");
-        t.addChildTo(t.getRoot(), "Zeus", "Persefone");
-        t.addChildTo(t.getRoot(), "Cronos", "Hades");
-        t.addChildTo(t.getRoot(), "Cronos", "Deméter");
-        t.addChildTo(t.getRoot(), "Gea", "Rea");
-        t.addChildTo(t.getRoot(), "Gea", "Febe");
-        t.addChildTo(t.getRoot(), "Gea", "Tía");
-        t.addChildTo(t.getRoot(), "Caos", "Urano");
-        t.addChildTo(t.getRoot(), "Urano", "Erinias");
-        t.addChildTo(t.getRoot(), "Urano", "Merlina");
-        t.addChildTo(t.getRoot(), "Urano", "Afrodita");
-        t.addChildTo(t.getRoot(), "Afrodita", "Eros");
-        t.addChildTo(t.getRoot(), "Caos", "Hémera");
-        t.addChildTo(t.getRoot(), "Caos", "Éter");
+        t.addChildCN("Nix");
+        t.addChildCN("Érebo");
+        t.currentNode = t.addChildCN("Gea");
+        t.addChildCN("Temis");
+        t.currentNode = t.addChildCN("Cronos");
+        t.addChildCN("Hestia");
+        t.addChildCN("Poseidon");
+        t.currentNode = t.addChildCN("Zeus");
+        t.addChildCN("Hefesto");
+        t.addChildCN("Hebe");
+        t.addChildCN("Ares");
+        t.addChildCN("Apolo");
+        t.addChildCN("Atenea");
+        t.addChildCN("Persefone");
+        t.currentNode = t.currentNode.getParentNode();
+        t.addChildCN("Hades");
+        t.addChildCN("Deméter");
+        t.currentNode = t.currentNode.getParentNode();
+        t.addChildCN("Rea");
+        t.addChildCN("Febe");
+        t.addChildCN("Tía");
+        t.currentNode = t.currentNode.getParentNode();        
+        t.currentNode = t.addChildCN("Urano");
+        t.addChildCN("Erinias");
+        t.addChildCN("Merlina");
+        t.currentNode = t.addChildCN("Afrodita");
+        t.addChildCN("Eros");
+        t.currentNode = t.currentNode.getParentNode().getParentNode();
+        t.addChildCN("Hémera");
+        t.addChildCN("Éter");
         t.print(t.getRoot());
     }
+    */
 }
 
 /*
