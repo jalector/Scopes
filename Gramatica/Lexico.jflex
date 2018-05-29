@@ -15,7 +15,6 @@ import java_cup.runtime.Symbol;
 %eofval}
 %%
 
-":fin:"		       			{return new Symbol(sym.POINT, new String(yytext()));}
 "class"					{return new Symbol(sym.CLASS, new String(yytext()));}
 "public"				{return new Symbol(sym.PUBLIC, new String(yytext()));}
 "private"				{return new Symbol(sym.PRIVATE, new String(yytext()));}
@@ -57,8 +56,7 @@ import java_cup.runtime.Symbol;
 ")"						{return new Symbol(sym.RPAREN, new String(yytext()));}
 "="						{return new Symbol(sym.ASSIGN, new String(yytext()));}
 [a-zA-Z]+[a-zA-Z0-9_]*	{return new Symbol(sym.ID, new String(yytext())); }
-(0|([1-9][0-9]*))(.)(0|([0-9]*[1-9]+))					{return new Symbol(sym.REAL, new String(yytext())); }
-0|([1-9][0-9]*)		{return new Symbol(sym.NUMBER, new Integer(yytext()));}
-\"[ -!#-¡]*\"		{return new Symbol(sym.STRING_VALUE, new String(yytext())); }
+0|([1-9][0-9]*)			{return new Symbol(sym.NUMBER, new Integer(yytext()));}
+\"[ -!#-¡]*\"			{return new Symbol(sym.STRING_VALUE, new String(yytext())); }
 [\t\r\n\l ]				{}
 .						{System.out.println("Caracter no válido "+ yytext()); }

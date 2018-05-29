@@ -23,29 +23,27 @@ scan with {:
 :}
 
 action code{:
-	Tree tree;
+	Tree <Value> tree;
 	int integer = 1;
 :}
 
 terminal CLASS;
 terminal LCBRACKET, RCBRACKET;
 terminal PLUS, MINUS, TIMES, DIVIDE, MOD, LPAREN, RPAREN, SEMI;
-terminal LESS, LESSEQ, GREATER, GREATEREQ, EQUALS, DIFF, AND, OR, NOT, POINT;
+terminal LESS, LESSEQ, GREATER, GREATEREQ, EQUALS, DIFF, AND, OR, NOT;
 terminal ASSIGN;
 terminal COMMA;
 terminal PUBLIC, PRIVATE, PROTECTED;
 terminal ID, VOID, BYTE, SHORT, INT, LONG, BOOLEAN, STRING, FLOAT, DOUBLE;
 terminal IF, ELSE, RETURN;
-terminal REAL;
 terminal Integer NUMBER;
 terminal Boolean TRUE, FALSE;
 terminal String STRING_VALUE;
 
-non terminal program, stm_list, stm, file;
+non terminal program, stm_list, stm;
 non terminal access_mod;
 non terminal inst, inst_list;
-non terminal call_method, dec_list, param, func, tipo, cond;
-non terminal Node <Value> dec;
+non terminal call_method, dec_list, dec, param, func, tipo, cond;
 non terminal id_list, param_list, ret_value;
 non terminal expr, expr_ari, expr_b, expr_str;
 non terminal bool_cons;
@@ -58,16 +56,16 @@ precedence left PLUS, MINUS;
 precedence left TIMES, DIVIDE, MOD;
 precedence left NOT;
 
-file ::= program POINT{:
-	tree.print(tree.getRoot());
-:};
 
-//Comenzamos con la declaración de la clase
-program 		::= CLASS ID:i LCBRACKET stm_list RCBRACKET{:
+program 		::= CLASS ID:i {:
 					tree = new Tree <Value> (new Value(Value.FRIENDLY, Value.CLASS, i.toString(), null, Value.VOID));
+				:}LCBRACKET stm_list RCBRACKET{:
+					tree.print(tree.getRoot());
 				:}
-				| access_mod:am CLASS:c ID:id LCBRACKET stm_list RCBRACKET{:
+				| access_mod:am CLASS ID:id {:
 					tree = new Tree <Value> (new Value(Value.accessMode(am.toString()), Value.CLASS, id.toString(), null, Value.VOID));
+				:} LCBRACKET stm_list RCBRACKET{:
+					tree.print(tree.getRoot());
 				:};
 
 stm_list		::= stm stm_list
@@ -79,17 +77,24 @@ stm				::= dec
 dec_list		::= dec dec_list
 				| dec; 				
 
-dec				::= tipo ID:id id_list SEMI{:
+				//Declaración de variable sin modificador de acceso
+dec				::= tipo:t ID:id  SEMI{:
+					tree.addChildCN(new Value(Value.FRIENDLY, Value.VARIABLE, id.toString(), null, Value.returnValue(t.toString())));
 				:}
-				| tipo ID ASSIGN expr SEMI{:
-
+				//Declaracióń, sin modificador de accesso y asignación
+				| tipo:t ID:id ASSIGN expr:e SEMI{:
+					tree.addChildCN(new Value(Value.FRIENDLY, Value.VARIABLE, id.toString(), e.toString(), Value.returnValue(t.toString())));
 				:}
-				| ID ASSIGN expr SEMI{:
-				
+				//Asignación de variable
+				| ID:id ASSIGN expr:e SEMI
+				//Declaración de variable con modificador de accesso
+				| access_mod:am tipo:t ID:id SEMI{:
+					tree.addChildCN(new Value(Value.accessMode(am.toString()), Value.VARIABLE, id.toString(), null, Value.returnValue(t.toString())));
 				:}
-				| access_mod tipo ID id_list SEMI
-				| access_mod tipo ID ASSIGN expr SEMI
-				| access_mod ID ASSIGN expr SEMI;
+				//Declaracióń y asignación				
+				| access_mod:am tipo:t ID:id ASSIGN expr:e SEMI{:
+					tree.addChildCN(new Value(Value.accessMode(am.toString()), Value.VARIABLE, id.toString(), e.toString(), Value.returnValue(t.toString())));
+				:};
 
 inst_list		::= inst inst_list
 				| inst;
@@ -101,22 +106,40 @@ inst 			::= dec
 call_method		::= ID LPAREN RPAREN SEMI
 				| ID LPAREN ID id_list RPAREN SEMI;
 
-cond			::= IF LPAREN expr_b RPAREN LCBRACKET inst_list RCBRACKET
-					ELSE LCBRACKET inst_list RCBRACKET
+cond			::= IF LPAREN expr_b RPAREN LCBRACKET inst_list RCBRACKET ELSE LCBRACKET inst_list RCBRACKET
 				| IF LPAREN expr_b RPAREN LCBRACKET inst_list RCBRACKET;
 
 id_list			::= id_list COMMA ID
 				| ;		
 
-//Declaración de funciones
-func			::= tipo:t ID:id LPAREN RPAREN LCBRACKET inst_list ret_value RCBRACKET{:
-					//tree.addChildCN(new Value(Value.FRIENDLY, Value.FUNCTION, id.toString(), null, Value.VOID));
+				//No accessMode, no Params
+func			::= tipo:t ID:id LPAREN RPAREN{:
+					tree.currentNode = tree.addChildCN(new Value(Value.FRIENDLY, Value.FUNCTION, id.toString(), null, Value.returnValue(t.toString())));
+				:} LCBRACKET inst_list ret_value RCBRACKET{:
+					tree.currentNode = tree.currentNode.getParentNode();
 				:}
-				| tipo  ID LPAREN param param_list RPAREN LCBRACKET inst_list ret_value RCBRACKET
-				| access_mod tipo ID LPAREN RPAREN LCBRACKET inst_list ret_value RCBRACKET
-				| access_mod tipo ID LPAREN param param_list RPAREN LCBRACKET inst_list ret_value RCBRACKET;	
+				//No accessMode, params
+				| tipo:t ID:id LPAREN {:
+					tree.currentNode = tree.addChildCN(new Value(Value.FRIENDLY, Value.FUNCTION, id.toString(), null, Value.returnValue(t.toString())));
+				:} param param_list RPAREN LCBRACKET inst_list ret_value RCBRACKET {:
+					tree.currentNode = tree.currentNode.getParentNode();
+				:}
+				//AccessMode, no params
+				| access_mod:am tipo:t ID:id LPAREN RPAREN {:
+					tree.currentNode = tree.addChildCN(new Value(Value.accessMode(am.toString()), Value.FUNCTION, id.toString(), null, Value.returnValue(t.toString())));
+				:}LCBRACKET inst_list ret_value RCBRACKET{:
+					tree.currentNode = tree.currentNode.getParentNode();
+				:}
+				//AccessMode, params
+				| access_mod:am tipo:t ID:id LPAREN {:
+					tree.currentNode = tree.addChildCN(new Value(Value.accessMode(am.toString()), Value.FUNCTION, id.toString(), null, Value.returnValue(t.toString())));
+				:} param param_list RPAREN LCBRACKET inst_list ret_value RCBRACKET{:
+					tree.currentNode = tree.currentNode.getParentNode();
+				:};	
 
-param			::= tipo ID; 
+param			::= tipo:t ID:id{:
+					tree.addChildCN(new Value(Value.PRIVATE, Value.PARAM, id.toString(), null, Value.returnValue(t.toString())));
+				:}; 
 
 param_list		::= param_list COMMA param
 				| ;
@@ -150,10 +173,10 @@ expr_ari		::= expr_ari:a PLUS expr_ari:b{:
 				| NUMBER:n {:
 					RESULT = n;
 				:}
-				| REAL:n {:
-					RESULT= n;
-				:}
-				| ID:i {:
+				| ID:id {:
+					//System.out.println("Valor of "+id.toString()+":"+tree.getParentOfParents(tree.currentNode.getChildren().getLast(), id.toString()));
+					//System.out.println(tree.currentNode.getChildren().getLast());
+					RESULT = "No lo puedo obtener";
 				:};
 
 expr_b 			::= expr_ari:a LESS expr_ari:b{:
@@ -209,13 +232,13 @@ expr_str		::= STRING_VALUE:sv {:
 					RESULT = a.toString() + b.toString();
 				:};
 
-expr         	::= expr_ari:e{:
+expr         	::= expr_ari:e {:
 					RESULT = e;
 				:}
-				| expr_b:e{:
+				| expr_b:e {:
 					RESULT = e;
 				:}
-				| expr_str:e{
+				| expr_str:e {:
 					RESULT = e;
 				:};
 

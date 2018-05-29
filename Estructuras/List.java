@@ -14,10 +14,10 @@ public class List <Type> {
         if(position <= this.size && position >= 0){
             Node <Type> newNode = new Node <Type> (information);
             if(this.isEmpty()){ 
-                begin = end = newNode;
+                this.begin = this.end = newNode;
             }else{
                 int index = 0;                
-                Node <Type> aux = begin;
+                Node <Type> aux = this.begin;
                 while(index < position){
                     aux = aux.getPreviousNode();
                     index++;
@@ -25,11 +25,11 @@ public class List <Type> {
                 if(index == 0){
                     aux.setNextNode(newNode);
                     newNode.setPreviousNode(aux);
-                    begin = newNode;
+                    this.begin = newNode;
                 }else if(index == this.size()){
-                    end.setPreviousNode(newNode);
+                    this.end.setPreviousNode(newNode);
                     newNode.setNextNode(end);
-                    end = newNode;
+                    this.end = newNode;
                 }else{
                     aux.getNextNode().setPreviousNode(newNode);
                     newNode.setPreviousNode(aux);
@@ -46,11 +46,11 @@ public class List <Type> {
     public void addFirst(Type information){
         Node <Type> newNode = new Node <Type>  (information);
         if(this.isEmpty()){
-            begin = end = newNode;
+            this.begin = this.end = newNode;
         }else{
-            begin.setNextNode(newNode);
+            this.begin.setNextNode(newNode);
             newNode.setPreviousNode(begin);
-            begin = newNode;
+            this.begin = newNode;
         }
         this.size++;
     }
@@ -58,22 +58,22 @@ public class List <Type> {
     public void addLast(Type information){
         Node <Type> newNode = new Node <Type> (information);
         if(this.isEmpty()){
-            begin = end = newNode;
+            this.begin = this.end = newNode;
         }else{
-            end.setPreviousNode(newNode);
+            this.end.setPreviousNode(newNode);
             newNode.setNextNode(end);
-            end = newNode;
+            this.end = newNode;
         }
         this.size++;
     }
 
      public void addLast(Node <Type> newNode){
         if(this.isEmpty()){
-            begin = end = newNode;
+            this.begin = this.end = newNode;
         }else{
-            end.setPreviousNode(newNode);
+            this.end.setPreviousNode(newNode);
             newNode.setNextNode(end);
-            end = newNode;
+            this.end = newNode;
         }
         this.size++;
     }
@@ -83,7 +83,7 @@ public class List <Type> {
         Type answer = null;
         if(position >= 0 && position < this.size){
             int index = 0;
-            Node <Type> aux = begin;
+            Node <Type> aux = this.begin;
             while(index < position){
                 aux = aux.getPreviousNode();
                 index++;
@@ -92,11 +92,20 @@ public class List <Type> {
         }
         return answer;
     } 
+
+    public Node <Type> getLast(){
+        return this.end;
+    }
+
+    public Node <Type> getFirst(){
+        return this.begin;
+    }
+
     public Node <Type> getChild(int position){
         Node <Type> answer = null;
         if(position >= 0 && position < this.size){
             int index = 0;
-            Node <Type> aux = begin;
+            Node <Type> aux = this.begin;
             while(index < position){
                 aux = aux.getPreviousNode();
                 index++;
@@ -109,7 +118,7 @@ public class List <Type> {
     public void set(int position, Type information){
         if(position >= 0 && position < this.size){
             int index = 0;
-            Node <Type> aux = begin;
+            Node <Type> aux = this.begin;
             while(index < position){
                 aux = aux.getPreviousNode();
                 index++;
@@ -123,14 +132,14 @@ public class List <Type> {
         Type answer = null;
         if(position >= 0 && position < this.size){
             int index = 0;
-            Node <Type> aux = begin;
+            Node <Type> aux = this.begin;
             while(index < position){
                 aux = aux.getPreviousNode();
                 index++;
             }
-            if(aux == begin){
+            if(aux == this.begin){
                 answer  = removeFist();
-            }else if(aux == end){
+            }else if(aux == this.end){
                 answer = removeLast();
             }else{
                 answer = aux.getInformation();
@@ -146,13 +155,13 @@ public class List <Type> {
     public Type removeFist(){
         Type answer = null;
         if(!this.isEmpty()){
-            answer = begin.getInformation();
-            begin = begin.getPreviousNode();
+            answer = this.begin.getInformation();
+            this.begin = this.begin.getPreviousNode();
 
             if(begin != null){
-                begin.setNextNode(null);
+                this.begin.setNextNode(null);
             }else{
-                begin = end = null;
+                this.begin = this.end = null;
             }
 
             this.size--;
@@ -163,13 +172,13 @@ public class List <Type> {
     public Type removeLast(){
         Type answer = null;
         if(!this.isEmpty()){
-            answer = end.getInformation();
-            end = end.getNextNode();
+            answer = this.end.getInformation();
+            this.end = this.end.getNextNode();
 
             if(end == null){
-                begin = end = null;
+                this.begin = this.end = null;
             }else{
-                end.setPreviousNode(null);
+                this.end.setPreviousNode(null);
             }
             this.size--;
         }
@@ -192,6 +201,6 @@ public class List <Type> {
         }
     }
     public String toString(){
-        return "Lista("+this.size+"): {Begin: "+this.begin+", End: "+this.end+"}";
+        return "Lista("+this.size+"): {Begin: "+this.begin+", this.end: "+this.end+"}";
     }
 }

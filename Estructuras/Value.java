@@ -20,6 +20,8 @@ public class Value {
     public static final int VARIABLE = 1;
     public static final int PARAM = 2;
     public static final int FUNCTION = 3;
+    public static final int IF = 4;
+    public static final int ELSE = 5;
 
     private int accessMode;
     private int type;
@@ -95,6 +97,17 @@ public class Value {
         return result;
     }
 
+    public String accessMode(int accessMode){
+        String result = "";
+        switch(accessMode){
+            case FRIENDLY:  result = "friendly";            break;
+            case PUBLIC:    result = "public";      break;
+            case PRIVATE:   result = "private";     break;
+            case PROTECTED: result = "protected";   break;            
+        }   
+        return result;
+    }
+
     public static int type(String type){
         int result = -1;
         switch(type){
@@ -102,6 +115,21 @@ public class Value {
             case "fun":     result =  FUNCTION;   break;
             case "param":   result =  PARAM;      break;
             case "class":   result =  CLASS;      break;
+            case "if":      result =  IF;         break;
+            case "else":    result =  ELSE;       break;
+        }
+        return result;
+    }
+
+    public String type(int type){
+        String result = "";
+        switch(type){
+            case VARIABLE : result = "var";     break;
+            case FUNCTION : result = "fun";     break;
+            case PARAM:     result = "param";   break;
+            case CLASS:     result = "class";   break;
+            case IF:        result = "if";      break;
+            case ELSE:      result = "else";    break;
         }
         return result;
     }
@@ -110,7 +138,7 @@ public class Value {
         int result = -1;
         switch(returnValue){
             case "void":        result =  VOID ;         break;
-            case "String":      result =  STRING ;       break;
+            case "string":      result =  STRING ;       break;
             case "byte":        result =  BYTE ;         break;
             case "short":       result =  SHORT ;        break;
             case "long":        result =  LONG ;         break;
@@ -123,9 +151,26 @@ public class Value {
         return result;
     }
 
+     public String returnValue(int returnValue){
+        String result = "";
+        switch(returnValue){
+            case VOID :        result =  "void" ;         break;
+            case STRING :      result =  "String" ;       break;
+            case BYTE :        result =  "byte" ;         break;
+            case SHORT :       result =  "short" ;        break;
+            case LONG :        result =  "long" ;         break;
+            case INT :         result =  "int" ;          break;
+            case FLOAT :       result =  "float" ;        break;
+            case DOUBLE :      result =  "double" ;       break;
+            case BOOLEAN :     result =  "boolean" ;      break;
+            default:           result =  "other" ;        break;
+        }
+        return result;
+    }
+
     public String toString(){
         //return "{M. accesso: "+this.accessMode+", Tipo: "+this.type+", Lexema: "+this.lex+", Value: "+this.value+", Return: "+this.returnValue+"}";
-        return "{"+this.accessMode+", "+this.type+", "+this.lexema+", "+this.value+", "+this.returnValue+"}";
+        return "{"+accessMode(accessMode)+", "+type(type)+", "+this.lexema+", "+this.value+", "+returnValue(returnValue)+"}";
     }
 
 

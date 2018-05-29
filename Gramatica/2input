@@ -1,9 +1,24 @@
 public class Prueba{
-    String nombre = "Juda"; 
-    int contador;
-    int c = 2+3;
-    public void suma (int a, int b) {
-        int cont;
+    public String nombre = "Juda"; 
+    private int edad = 15+8;
+    protected String apellido = "Vallejo";    
+    
+    public void saludo(String persona) {
+        int hora = 7;
+        int minutos = 30;        
+        println(persona);
     }
+    
+    void prueba (int a, int b) {        
+        int c = 3;
+        byte d = 12;
+        short e = 15;
+    }
+
+    public int prueba2 (int a, int b, String c) {
+        int cont = 0;
+
+    }
+
+    
 }
-:fin:

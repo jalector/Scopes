@@ -86,7 +86,7 @@ public class Tree <Type> {
         if(subtree.hasChildren()){
             List <Type> l = subtree.getChildren();
             for(int i = 0, e = l.size(); i < e; i++){
-                print(l.getChild(i),space+"│"+"  ");
+                print(l.getChild(i),space+"│"+"      ");
             }
         }
     }
@@ -99,11 +99,23 @@ public class Tree <Type> {
             }
         }
     }
-    //TODO: BUSCAR PARIENTES LEJANOS.
-    public Node <Type> getParentOfParents(){
-        return null;
+    
+    public Node <Type> getParentOfParents(Node <Type> son, Type information){
+        Node <Type> answer = null, aux = son;
+       do{
+            if(aux.getInformation() == information){
+                answer = aux; break;
+            }
+            aux = aux.getNextNode();
+        } while(aux != null);
+        if(answer == null){
+            if(son.getParentNode() != null){
+                answer = getParentOfParents(son.getParentNode(), information);
+            }
+        }
+        return answer;
     }
-/*
+
     public static void main(String [] args){
         Tree <String> t = new Tree <String> ("Caos");
 
@@ -119,8 +131,8 @@ public class Tree <Type> {
         t.addChildCN("Hebe");
         t.addChildCN("Ares");
         t.addChildCN("Apolo");
-        t.addChildCN("Atenea");
-        t.addChildCN("Persefone");
+        t.addChildCN("Atenea");        
+        t.addChildCN("Persefone");        
         t.currentNode = t.currentNode.getParentNode();
         t.addChildCN("Hades");
         t.addChildCN("Deméter");
@@ -138,8 +150,10 @@ public class Tree <Type> {
         t.addChildCN("Hémera");
         t.addChildCN("Éter");
         t.print(t.getRoot());
+        System.out.println(t.getParentOfParents(t.getChild(t.getRoot(),"Hémera"), "Nix"));
+        
     }
-    */
+    
 }
 
 /*
