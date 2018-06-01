@@ -86,14 +86,50 @@ dec				::= tipo:t ID:id  SEMI{:
 					tree.addChildCN(new Value(Value.FRIENDLY, Value.VARIABLE, id.toString(), e.toString(), Value.returnValue(t.toString())));
 				:}
 				//Asignación de variable
-				| ID:id ASSIGN expr:e SEMI
+				| ID:id ASSIGN expr:e SEMI{:	
+					Node <Value> auxNode= tree.getParentOfParents(tree.currentNode.getChildren().getLast(), id.toString());
+					Value auxValue;
+					if(auxNode == null){
+						//el identificador no existe y por lo tanto no podemos asignarle un valor
+						System.out.println("El identificador "+ id +" no ha sido declarado");
+					}else{
+						//el identificador ya existe y por lo tanto podemos buscarlo y asignarle el valor
+						//System.out.println("el identificador si existe");
+						auxValue= (Value)auxNode.getInformation();
+						auxValue.setValue(e.toString());
+					}								
+				:}
 				//Declaración de variable con modificador de accesso
 				| access_mod:am tipo:t ID:id SEMI{:
-					tree.addChildCN(new Value(Value.accessMode(am.toString()), Value.VARIABLE, id.toString(), null, Value.returnValue(t.toString())));
+					Node <Value> auxNode = tree.getParentOfParents(tree.currentNode.getChildren().getLast(), id.toString());
+					//Value auxValue;   //no se necesita, ya que no ha sido creado ()
+					if(auxNode == null){
+						//el identificador no ha sido declarado y lo podemos crear
+						tree.addChildCN(new Value(Value.accessMode(am.toString()), Value.VARIABLE, id.toString(), null, Value.returnValue(t.toString())));
+					}else{
+						//el identificador ya ha sido declarado y no podemos declararlo otra vez
+						System.out.println("el identificador "+ id.toString() +" ya fue declarado");
+					}
 				:}
 				//Declaracióń y asignación				
 				| access_mod:am tipo:t ID:id ASSIGN expr:e SEMI{:
-					tree.addChildCN(new Value(Value.accessMode(am.toString()), Value.VARIABLE, id.toString(), e.toString(), Value.returnValue(t.toString())));
+					//Node <Value> auxNode = tree.getParentOfParents(tree.currentNode.getChildren().getLast(), id.toString());
+					/*El metodo getLast() de la clase List, cuando es nulo, causará que en el método 
+					getParentOfParent de la clase Tree, al momento que hace la 
+					primera instruccion del do{}while 
+					--> Value v = (Value) aux.getInformation(); <--
+					mandará una excepción de NullPointerException
+					*/
+					Node <Value> auxNode= null;
+					//Value auxValue;   //no se necesita, ya que no ha sido creado ()
+					if(auxNode == null){
+						//el identificador no ha sido declarado y lo podemos crear
+						tree.addChildCN(new Value(Value.accessMode(am.toString()), Value.VARIABLE, id.toString(), e.toString(), Value.returnValue(t.toString())));
+					}else{
+						//el identificador ya ha sido declarado y no podemos declararlo otra vez
+						System.out.println("el identificador "+ id.toString() +" ya fue declarado");
+					}
+					//tree.addChildCN(new Value(Value.accessMode(am.toString()), Value.VARIABLE, id.toString(), e.toString(), Value.returnValue(t.toString())));
 				:};
 
 inst_list		::= inst inst_list
@@ -174,9 +210,17 @@ expr_ari		::= expr_ari:a PLUS expr_ari:b{:
 					RESULT = n;
 				:}
 				| ID:id {:
-					//System.out.println("Valor of "+id.toString()+":"+tree.getParentOfParents(tree.currentNode.getChildren().getLast(), id.toString()));
-					//System.out.println(tree.currentNode.getChildren().getLast());
-					RESULT = "No lo puedo obtener";
+					Node <Value> auxNode= tree.getParentOfParents(tree.currentNode.getChildren().getLast(), id.toString());
+					Value auxValue;
+					if(auxNode == null){
+						//el identificador no existe y por lo tanto no podemos asignarle un valor
+						System.out.println("El identificador "+ id +" no ha sido declarado");
+					}else{
+						//el identificador ya existe y por lo tanto podemos buscarlo y asignarle el valor
+						//System.out.println("el identificador si existe");
+						auxValue = (Value)auxNode.getInformation();
+						RESULT = auxValue.getValue();
+					}	
 				:};
 
 expr_b 			::= expr_ari:a LESS expr_ari:b{:

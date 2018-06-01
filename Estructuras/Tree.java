@@ -65,6 +65,7 @@ public class Tree <Type> {
         return node.getChildren();
     }
 
+
     public int size(){
         return this.size;
     }
@@ -100,10 +101,26 @@ public class Tree <Type> {
         }
     }
     
-    public Node <Type> getParentOfParents(Node <Type> son, Type information){
+     /* metodo para buscar por identificador y obtener ese nodo */
+    public Node <Type> getNodeByLexema(Node <Value> son, String lexema){
+        List <Type> l= getRoot().getChildren();
+        Node <Type> auxNode= null;  
+        Value auxValue= null;           //para almacenar el conjunto del objeto "Value"
+        for(int i=0; i< l.size(); i++){
+            auxNode= l.getChild(i);
+            auxValue= (Value) auxNode.getInformation();
+            if(lexema.equalsIgnoreCase(auxValue.getLexema())){
+                return auxNode;
+            }
+        }
+        return null;
+    }
+
+    public Node <Type> getParentOfParents(Node <Type> son, String information){
         Node <Type> answer = null, aux = son;
        do{
-            if(aux.getInformation() == information){
+            Value v = (Value) aux.getInformation();
+            if(information.equalsIgnoreCase(v.getLexema())){
                 answer = aux; break;
             }
             aux = aux.getNextNode();

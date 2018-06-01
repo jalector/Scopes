@@ -1,5 +1,6 @@
 import java.io.*;
 import java_cup.runtime.*;
+import Estructuras.*;
 
 parser code {:
 	Yylex lexico;
@@ -13,7 +14,7 @@ parser code {:
 	}
 
 	public void syntax_error(Symbol s){
-		report_error("Error de sintaxis: "+Integer.toString(Yylex.linea + 1) + ", Columna: "+ Integer.toString(Yylex.pos + 1) + ". En \"" + s.value + "\"", null);
+		report_error("Error de sintaxis: "+Integer.toString(Yylex.linea + 1) + ", Columna: "+ Integer.toString(Yylex.pos + 1) + ". En \"" + s.value + "\"\n", null);
 	}
 :}
 
@@ -22,22 +23,30 @@ scan with {:
 :}
 
 action code{:
+	Tree <Value> tree;
 	int integer = 1;
-	Pool pool = new Pool();
 :}
 
-terminal String PLUS, MINUS, TIMES, DIVIDE, MOD, LPAREN, RPAREN, SEMI;
-terminal String LESS, LESSEQ, GREATER, GREATEREQ, EQUALS, DIFF;
-terminal String AND, OR, NOT;
-terminal SICIERTO, NOCIERTO, unnumero, unboolean;
-terminal String ASSIGN, ID;
+terminal CLASS;
+terminal LCBRACKET, RCBRACKET;
+terminal PLUS, MINUS, TIMES, DIVIDE, MOD, LPAREN, RPAREN, SEMI;
+terminal LESS, LESSEQ, GREATER, GREATEREQ, EQUALS, DIFF, AND, OR, NOT;
+terminal ASSIGN;
+terminal COMMA;
+terminal PUBLIC, PRIVATE, PROTECTED;
+terminal ID, VOID, BYTE, SHORT, INT, LONG, BOOLEAN, STRING, FLOAT, DOUBLE;
+terminal IF, ELSE, RETURN;
 terminal Integer NUMBER;
-terminal PUNTO;
+terminal Boolean TRUE, FALSE;
+terminal String STRING_VALUE;
 
-non terminal expr_list, expr_part;
-non terminal expr;
-non terminal expr_ari, expr_log, expr_rel;
-non terminal log_value, value;
+non terminal program, stm_list, stm;
+non terminal access_mod;
+non terminal inst, inst_list;
+non terminal call_method, dec_list, dec, param, func, tipo, cond;
+non terminal id_list, param_list, ret_value;
+non terminal expr, expr_ari, expr_b, expr_str;
+non terminal bool_cons;
 
 precedence left OR;
 precedence left AND;
@@ -47,81 +56,233 @@ precedence left PLUS, MINUS;
 precedence left TIMES, DIVIDE, MOD;
 precedence left NOT;
 
-expr_list 		::= expr_list expr_part
-				| expr_part;
 
-expr_part 		::= expr SEMI{:
-					System.out.println("Operación exitosa. Resultado: "+e.toString());
+program 		::= CLASS ID:i {:
+					tree = new Tree <Value> (new Value(Value.FRIENDLY, Value.CLASS, i.toString(), null, Value.VOID));
+				:}LCBRACKET stm_list RCBRACKET{:
+					tree.print(tree.getRoot());
 				:}
-				| unnumero:t ID:i ASSIGN expr:e{:
-					pool.addTupla(t, i, e.intValue());
-					System.out.println(e.intValue());
-				:}
-				| unboolean:t ID:i ASSIGN expr:e{:
-					pool.addTupla(t, i, e.booleanValue());
-					System.out.println(e.booleanValue());
-				:}
-				| PUNTO {:
-                	System.out.println("Archivo procesando exitosamente.");
-               	 	System.exit(1);
-            	:};
-
-expr 			::= expr_ari
-				| expr_log
-				| expr_rel;
-
-expr_ari		::= expr_ari PLUS expr_ari
-				| expr_ari MINUS expr_ari
-				| expr_ari TIMES expr_ari
-				| expr_ari DIVIDE expr_ari
-				| expr_ari MOD expr_ari
-				| LPAREN expr_ari RPAREN
-				| value;
-
-expr_rel		::= expr_ari LESS expr_ari
-				| expr_ari LESSEQ expr_ari
-				| expr_ari GREATER expr_ari
-				| expr_ari GREATEREQ expr_ari
-				| expr_ari DIFF expr_ari
-				| expr_ari EQUALS expr_ari
-				| expr_log EQUALS expr_log
-				| expr_log DIFF expr_log
-				| LPAREN expr_rel RPAREN;
-
-expr_log		::= log_value 
-				| expr_rel
-				| expr_log OR expr_log
-				| expr_log AND expr_log
-				| NOT expr_log
-				| LPAREN expr_log RPAREN
-				| expr_log;
-
-value			::= NUMBER:n {:
-					RESULT = n;
-				:}
-				| ID:i {:
-					Tupla aux = pool.findTupla(i);
-            		if(aux == null){
-            	    	System.out.println("Variable no definida ["+i+"]");
-            	    	System.exit(0);
-            		}else{
-                		RESULT = (int)aux.getValue();
-            		}
+				| access_mod:am CLASS ID:id {:
+					tree = new Tree <Value> (new Value(Value.accessMode(am.toString()), Value.CLASS, id.toString(), null, Value.VOID));
+				:} LCBRACKET stm_list RCBRACKET{:
+					tree.print(tree.getRoot());
 				:};
 
-log_value		::= NOCIERTO:b {:
-					RESULT= b;
-				:}
-				| SICIERTO:b {:
-					RESULT= b;
-				:}
-				| ID:i {:
-					Tupla aux = pool.findTupla(i);
-            		if(aux == null){
-            	    	System.out.println("Variable no definida ["+i+"]");
-            	    	System.exit(0);
-            		}else{
-                		RESULT = (double)aux.getValue();
-            		}
-				:};				
+stm_list		::= stm stm_list
+				| stm;
 
+stm				::= dec
+				| func;
+
+dec_list		::= dec dec_list
+				| dec; 				
+
+				//Declaración de variable sin modificador de acceso
+dec				::= tipo:t ID:id  SEMI{:
+					tree.addChildCN(new Value(Value.FRIENDLY, Value.VARIABLE, id.toString(), null, Value.returnValue(t.toString())));
+				:}
+				//Declaracióń, sin modificador de accesso y asignación
+				| tipo:t ID:id ASSIGN expr:e SEMI{:
+					tree.addChildCN(new Value(Value.FRIENDLY, Value.VARIABLE, id.toString(), e.toString(), Value.returnValue(t.toString())));
+				:}
+				//Asignación de variable
+				| ID:id ASSIGN expr:e SEMI{:	
+					Node <Value> auxNode= tree.getParentOfParents(tree.currentNode.getChildren().getLast(), id.toString());
+					Value auxValue;
+					if(auxNode == null){
+						//el identificador no existe y por lo tanto no podemos asignarle un valor
+						System.out.println("El identificador "+ id +" no ha sido declarado");
+					}else{
+						//el identificador ya existe y por lo tanto podemos buscarlo y asignarle el valor
+						//System.out.println("el identificador si existe");
+						auxValue= (Value)auxNode.getInformation();
+						auxValue.setValue(e.toString());
+					}								
+				:}
+				//Declaración de variable con modificador de accesso
+				| access_mod:am tipo:t ID:id SEMI{:
+					Node <Value> auxNode = tree.getParentOfParents(tree.currentNode.getChildren().getLast(), id.toString());
+					Value auxValue;
+					if(auxNode == null){
+						//el identificador no ha sido declarado y lo podemos crear
+						tree.addChildCN(new Value(Value.accessMode(am.toString()), Value.VARIABLE, id.toString(), null, Value.returnValue(t.toString())));
+					}else{
+						//el identificador ya ha sido declarado y no podemos declararlo otra vez
+						System.out.println("el identificador "+ id.toString() +" ya fue declarado");
+					}
+				:}
+				//Declaracióń y asignación				
+				| access_mod:am tipo:t ID:id ASSIGN expr:e SEMI{:
+					tree.addChildCN(new Value(Value.accessMode(am.toString()), Value.VARIABLE, id.toString(), e.toString(), Value.returnValue(t.toString())));
+				:};
+
+inst_list		::= inst inst_list
+				| inst;
+
+inst 			::= dec
+				| cond
+				| call_method;
+
+call_method		::= ID LPAREN RPAREN SEMI
+				| ID LPAREN ID id_list RPAREN SEMI;
+
+cond			::= IF LPAREN expr_b RPAREN LCBRACKET inst_list RCBRACKET ELSE LCBRACKET inst_list RCBRACKET
+				| IF LPAREN expr_b RPAREN LCBRACKET inst_list RCBRACKET;
+
+id_list			::= id_list COMMA ID
+				| ;		
+
+				//No accessMode, no Params
+func			::= tipo:t ID:id LPAREN RPAREN{:
+					tree.currentNode = tree.addChildCN(new Value(Value.FRIENDLY, Value.FUNCTION, id.toString(), null, Value.returnValue(t.toString())));
+				:} LCBRACKET inst_list ret_value RCBRACKET{:
+					tree.currentNode = tree.currentNode.getParentNode();
+				:}
+				//No accessMode, params
+				| tipo:t ID:id LPAREN {:
+					tree.currentNode = tree.addChildCN(new Value(Value.FRIENDLY, Value.FUNCTION, id.toString(), null, Value.returnValue(t.toString())));
+				:} param param_list RPAREN LCBRACKET inst_list ret_value RCBRACKET {:
+					tree.currentNode = tree.currentNode.getParentNode();
+				:}
+				//AccessMode, no params
+				| access_mod:am tipo:t ID:id LPAREN RPAREN {:
+					tree.currentNode = tree.addChildCN(new Value(Value.accessMode(am.toString()), Value.FUNCTION, id.toString(), null, Value.returnValue(t.toString())));
+				:}LCBRACKET inst_list ret_value RCBRACKET{:
+					tree.currentNode = tree.currentNode.getParentNode();
+				:}
+				//AccessMode, params
+				| access_mod:am tipo:t ID:id LPAREN {:
+					tree.currentNode = tree.addChildCN(new Value(Value.accessMode(am.toString()), Value.FUNCTION, id.toString(), null, Value.returnValue(t.toString())));
+				:} param param_list RPAREN LCBRACKET inst_list ret_value RCBRACKET{:
+					tree.currentNode = tree.currentNode.getParentNode();
+				:};	
+
+param			::= tipo:t ID:id{:
+					tree.addChildCN(new Value(Value.PRIVATE, Value.PARAM, id.toString(), null, Value.returnValue(t.toString())));
+				:}; 
+
+param_list		::= param_list COMMA param
+				| ;
+
+ret_value		::= RETURN expr SEMI
+				| ;
+
+expr_ari		::= expr_ari:a PLUS expr_ari:b{:
+					RESULT = Integer.toString(Integer.parseInt(a.toString()) + Integer.parseInt(b.toString()));
+				:}
+				| expr_ari:a MINUS expr_ari:b{:
+					RESULT = Integer.toString(Integer.parseInt(a.toString()) - Integer.parseInt(b.toString()));
+				:}
+				| expr_ari:a TIMES expr_ari:b{:
+					RESULT = Integer.toString(Integer.parseInt(a.toString()) * Integer.parseInt(b.toString()));
+				:}
+				| expr_ari:a DIVIDE expr_ari:b{:
+					if(Integer.parseInt(b.toString()) != 0){
+		                RESULT = Integer.toString(Integer.parseInt(a.toString()) + Integer.parseInt(b.toString()));
+		            }else{
+		                System.out.println("Error semantico, division por cero.");
+		                System.exit(0);
+		            }
+				:}
+				| expr_ari:a MOD expr_ari:b{:
+					RESULT = Integer.toString(Integer.parseInt(a.toString()) % Integer.parseInt(b.toString()));
+				:}
+				| LPAREN expr_ari:e RPAREN{:
+					RESULT = e;
+				:}
+				| NUMBER:n {:
+					RESULT = n;
+				:}
+				| ID:id {:
+					Node <Value> auxNode= tree.getParentOfParents(tree.currentNode.getChildren().getLast(), id.toString());
+					Value auxValue;
+					if(auxNode == null){
+						//el identificador no existe y por lo tanto no podemos asignarle un valor
+						System.out.println("El identificador "+ id +" no ha sido declarado");
+					}else{
+						//el identificador ya existe y por lo tanto podemos buscarlo y asignarle el valor
+						//System.out.println("el identificador si existe");
+						auxValue = (Value)auxNode.getInformation();
+						RESULT = auxValue.getValue();
+					}	
+				:};
+
+expr_b 			::= expr_ari:a LESS expr_ari:b{:
+					RESULT = (Integer.parseInt(a.toString()) < Integer.parseInt(b.toString()))?"true":"false";
+				:}
+				| expr_ari:a LESSEQ expr_ari:b{:
+					RESULT = (Integer.parseInt(a.toString()) <= Integer.parseInt(b.toString()))?"true":"false";
+				:}
+				| expr_ari:a GREATER expr_ari:b{:
+					RESULT = (Integer.parseInt(a.toString()) > Integer.parseInt(b.toString()))?"true":"false";
+				:}
+				| expr_ari:a GREATEREQ expr_ari:b{:
+					RESULT = (Integer.parseInt(a.toString()) >= Integer.parseInt(b.toString()))?"true":"false";
+				:}
+				| expr_ari:a DIFF expr_ari:b{: 
+					if( (a.toString().equals("true") || a.toString().equals("false")) 
+						&& (b.toString().equals("true") || b.toString().equals("false"))){
+						RESULT = (Boolean.parseBoolean(a.toString()) != Boolean.parseBoolean(b.toString()))?"true":"false";
+					}else{
+						RESULT = (Integer.parseInt(a.toString()) != Integer.parseInt(b.toString()))?"true":"false";
+					}					
+				:}
+				| expr_ari:a EQUALS expr_ari:b{:
+					if( (a.toString().equals("true") || a.toString().equals("false")) 
+						&& (b.toString().equals("true") || b.toString().equals("false"))){
+						RESULT = (Boolean.parseBoolean(a.toString()) == Boolean.parseBoolean(b.toString()))?"true":"false";
+					}else{
+						RESULT = (Integer.parseInt(a.toString()) == Integer.parseInt(b.toString()))?"true":"false";
+					}
+				:}
+				| NOT expr:b{:
+					if( b.toString().equals("true") || b.toString().equals("false")){
+						RESULT = (!Boolean.parseBoolean(b.toString()))?"true":"false";
+					}else{
+						System.out.println(b.toString()+", no es \"un boolean\""+"\t");
+					}					
+				:}
+				| expr:a OR expr:b{:
+					RESULT = (Boolean.parseBoolean(a.toString()) || Boolean.parseBoolean(b.toString()))?"true":"false";
+				:}
+				| expr:a AND expr:b{:
+					RESULT = (Boolean.parseBoolean(a.toString()) && Boolean.parseBoolean(b.toString()))?"true":"false";
+				:} 
+				| LPAREN expr_b:e RPAREN{:
+					RESULT = e;
+				:}
+				| bool_cons:c{:RESULT = c;:};
+
+expr_str		::= STRING_VALUE:sv {:
+					RESULT = sv.toString();
+				:}
+				| expr:a PLUS expr:b{:
+					RESULT = a.toString() + b.toString();
+				:};
+
+expr         	::= expr_ari:e {:
+					RESULT = e;
+				:}
+				| expr_b:e {:
+					RESULT = e;
+				:}
+				| expr_str:e {:
+					RESULT = e;
+				:};
+
+access_mod		::= PUBLIC {:RESULT = "public";:}
+				| PRIVATE{:RESULT = "private";:}
+				| PROTECTED{:RESULT = "protected";:};
+
+tipo			::= VOID{:RESULT = "void"; :}
+				| BYTE{:RESULT = "byte"; :}
+				| SHORT{:RESULT = "short"; :}
+				| INT{:RESULT = "int"; :}
+				| LONG{:RESULT = "long"; :}
+				| BOOLEAN{:RESULT = "boolean"; :}
+				| STRING{:RESULT = "string"; :}
+				| FLOAT{:RESULT = "float"; :}
+				| DOUBLE{:RESULT = "double"; :};
+
+bool_cons		::= FALSE{:RESULT ="false ";:}
+				| TRUE {:RESULT ="true";:};

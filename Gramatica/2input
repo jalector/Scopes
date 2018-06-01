@@ -1,12 +1,23 @@
 public class Prueba{
+    nombre = "MIke";
     public String nombre = "Juda"; 
     private int edad = 15+8;
     protected String apellido = "Vallejo";    
+    
+    nombre = "Mike";
+    nombre = "Juanito";
+    nombreSinDeclarar = ":v";
+
+    
+    public String nombre = "nombre";
+    private int edad;
     
     public void saludo(String persona) {
         int hora = 7;
         int minutos = 30;        
         println(persona);
+        public String nombre= "nuevo";
+        nombre = "juanito en el metodo";
     }
     
     void prueba (int a, int b) {        
@@ -20,5 +31,7 @@ public class Prueba{
 
     }
 
-    
+    public int prueba2(int a, int b, String c) {
+        int cont = 0;
+    }
 }
